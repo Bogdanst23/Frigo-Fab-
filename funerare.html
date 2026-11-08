@@ -45,6 +45,10 @@
                 radial-gradient(circle at 82% 55%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
         }
 
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--ice-primary); border-radius: 4px; }
+
         #frost-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .container { max-width: 1260px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 1; }
 
@@ -56,24 +60,61 @@
         }
         .interactive-card:hover::before { opacity: 1; }
 
-        /* ================= HEADER ================= */
+        /* ================= TOP BAR ================= */
         .top-bar {
-            position: relative; z-index: 1001; background: rgba(2, 6, 13, 0.94);
-            border-bottom: 1px solid var(--border-ice); padding: 9px 5%;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--text-silver);
+            position: relative;
+            z-index: 1001;
+            background: rgba(2, 6, 13, 0.94);
+            border-bottom: 1px solid var(--border-ice);
+            padding: 9px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-silver);
         }
-        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 22px; }
-        .top-bar-item { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--text-silver); }
-        .top-bar-item i { color: var(--ice-bright); }
 
+        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 24px; }
+        .top-bar-item { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-silver); transition: var(--transition); }
+        .top-bar-item i { color: var(--ice-bright); }
+        .top-bar-item:hover { color: var(--text-white); }
+
+        /* ================= HEADER ================= */
         header {
-            position: sticky; top: 0; width: 100%; z-index: 1000; padding: 14px 5%;
-            background: rgba(3, 8, 18, 0.86); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-ice); display: flex; align-items: center; justify-content: space-between;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 14px 5%;
+            background: rgba(3, 8, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-ice);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
         }
+
+        header.scrolled {
+            padding: 10px 5%;
+            background: rgba(3, 8, 18, 0.96);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+        }
+
         .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-        .brand-logo { height: 50px; width: auto; border-radius: 10px; background: #fff; padding: 4px 10px; box-shadow: 0 4px 20px rgba(0, 149, 217, 0.35); }
-        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; color: var(--text-white); line-height: 1.05; display: block; }
+        
+        /* Logo fără fundal alb - filtrat automat în cod */
+        .brand-logo {
+            height: 54px;
+            width: auto;
+            background: transparent;
+            padding: 0;
+            filter: url(#remove-white-bg) drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45));
+            transition: var(--transition);
+        }
+        .brand-wrap:hover .brand-logo { transform: scale(1.06); }
+        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-white); line-height: 1.05; display: block; }
         .brand-title span { color: var(--ice-bright); }
         .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
 
@@ -88,8 +129,10 @@
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .header-cta {
             display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
-            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice);
+            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice); border: 1px solid rgba(255, 255, 255, 0.22); transition: var(--transition);
         }
+        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.6); }
+
         .menu-toggle {
             display: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 149, 217, 0.15);
             border: 1px solid var(--border-ice); color: #fff; font-size: 1.3rem; cursor: pointer; align-items: center; justify-content: center;
@@ -120,7 +163,7 @@
         .filter-tab.active i, .filter-tab:hover i { color: var(--text-white); }
 
         /* ================= SHOWCASE CARDS ================= */
-        .showcase-list { display: flex; flex-direction: column; gap: 38px; padding: 25px 0 65px; }
+        .showcase-list { display: flex; flex-direction: column; gap: 38px; padding: 25px 0 85px; }
         .showcase-card {
             display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 38px; align-items: center;
             background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 26px;
@@ -133,7 +176,6 @@
             background: #040c18; cursor: zoom-in;
         }
         .photo-frame img { width: 100%; height: 390px; object-fit: cover; display: block; transition: transform 0.65s ease; }
-        .photo-frame.white-bg img { background: #fff; object-fit: contain; padding: 18px; }
         .photo-frame:hover img { transform: scale(1.05); }
 
         .zoom-badge {
@@ -188,19 +230,6 @@
         .btn-call i { color: var(--ice-bright); }
         .btn-call:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.14); }
 
-        /* ================= EXTRA PHOTO GRID (funerar4, funerar5, funerar6) ================= */
-        .photo-gallery-section { padding-bottom: 85px; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .gallery-card {
-            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 20px;
-            overflow: hidden; cursor: zoom-in; transition: var(--transition);
-        }
-        .gallery-card:hover { transform: translateY(-6px); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
-        .gallery-card img { width: 100%; height: 260px; object-fit: cover; display: block; transition: transform 0.6s ease; }
-        .gallery-card:hover img { transform: scale(1.06); }
-        .gallery-card-footer { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 700; color: var(--text-white); }
-        .gallery-card-footer i { color: var(--ice-bright); }
-
         /* ================= LIGHTBOX & FOOTER ================= */
         .lightbox {
             position: fixed; inset: 0; z-index: 3000; background: rgba(2, 6, 13, 0.94);
@@ -233,11 +262,11 @@
 
         @media (max-width: 992px) {
             .top-bar { display: none; }
-            .showcase-card, .gallery-grid { grid-template-columns: 1fr; }
+            .showcase-card { grid-template-columns: 1fr; }
             .photo-frame img { height: 320px; }
         }
         @media (max-width: 768px) {
-            .brand-logo { height: 42px; }
+            .brand-logo { height: 44px; }
             .brand-title { font-size: 1.18rem; }
             .header-cta span { display: none; }
             .header-cta { padding: 10px 14px; }
@@ -248,6 +277,7 @@
             }
             nav.open { display: block; }
             nav ul { flex-direction: column; align-items: stretch; gap: 8px; }
+            nav ul li a { padding: 13px 16px; font-size: 0.96rem; }
             .spec-pills { grid-template-columns: 1fr; }
             .showcase-card { padding: 22px 16px; }
             .mobile-sticky-bar { display: grid; }
@@ -256,33 +286,46 @@
 </head>
 <body>
 
+    <!-- Filtru SVG care elimină automat fundalul alb al logo-ului direct în cod -->
+    <svg width="0" height="0" style="position:absolute; pointer-events:none;">
+        <filter id="remove-white-bg" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                -3.5 -3.5 -3.5 10 0" />
+        </filter>
+    </svg>
+
     <canvas id="frost-canvas"></canvas>
 
     <!-- ================= TOP BAR ================= -->
     <div class="top-bar">
         <div class="top-bar-left">
-            <span class="top-bar-item"><i class="fa-solid fa-snowflake"></i> DIVIZIA FUNERARĂ &amp; UNITĂȚI SANITARE (MORGĂ)</span>
-            <span class="top-bar-item"><i class="fa-solid fa-award"></i> Inox AISI 304 • Sistem ISO 9001</span>
+            <span class="top-bar-item"><i class="fa-solid fa-building-shield"></i> SC PROD SONRESA SRL • Sistem ISO 9001</span>
+            <span class="top-bar-item"><i class="fa-solid fa-location-dot"></i> Lupești, Jud. Bacău, România</span>
         </div>
         <div class="top-bar-right">
+            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
+            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
             <a href="tel:0741585655" class="top-bar-item" style="color: var(--text-white); font-weight: 700;"><i class="fa-solid fa-phone"></i> 0741.585.655</a>
         </div>
     </div>
 
     <!-- ================= HEADER ================= -->
-    <header>
+    <header id="header">
         <a href="index.html" class="brand-wrap">
-            <!-- POZA LOGO: logo.png -->
-            <img src="logo.png" alt="FrigoFab Logo" class="brand-logo">
+            <!-- POZA LOGO DIN FOLDERUL images/ -->
+            <img src="images/logo.png" onerror="this.onerror=null; this.src='images/logo.jpeg';" alt="FrigoFab Logo" class="brand-logo">
             <div>
                 <span class="brand-title">FRIGO<span>FAB</span></span>
-                <span class="brand-subtitle">Divizia Funerară &amp; Morgă</span>
+                <span class="brand-subtitle">Turn On Posibilităților</span>
             </div>
         </a>
 
         <nav id="nav-menu">
             <ul>
-                <li><a href="index.html"><i class="fa-solid fa-house"></i> Acasă</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
                 <li><a href="funerare.html" class="active"><i class="fa-solid fa-snowflake"></i> Divizia Funerară &amp; Morgă</a></li>
                 <li><a href="frigorifice.html"><i class="fa-solid fa-industry"></i> Divizia Frigorifice</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
@@ -322,9 +365,9 @@
 
             <!-- 1. GAMA KOLD AIR -->
             <div class="showcase-card interactive-card reveal" data-cat="kold-air">
-                <!-- POZA 1 FUNERARE: funerar1.png -->
-                <div class="photo-frame tilt-element" onclick="openLightbox('funerar1.png')">
-                    <img src="funerar1.png" alt="Frigider Mortuar Inox Gama Kold Air">
+                <!-- POZA 1 FUNERARE: images/funerar1.png -->
+                <div class="photo-frame tilt-element" onclick="openLightbox('images/funerar1.png')">
+                    <img src="images/funerar1.png" alt="Frigider Mortuar Inox Gama Kold Air">
                     <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
                 </div>
 
@@ -381,9 +424,9 @@
 
             <!-- 2. GAMA KOLD ASSIST -->
             <div class="showcase-card interactive-card reveal" data-cat="kold-assist">
-                <!-- POZA 2 FUNERARE: funerar2.png -->
-                <div class="photo-frame tilt-element" onclick="openLightbox('funerar2.png')">
-                    <img src="funerar2.png" alt="Elevator Hidraulic Morga Gama Kold Assist">
+                <!-- POZA 2 FUNERARE: images/funerar2.png -->
+                <div class="photo-frame tilt-element" onclick="openLightbox('images/funerar2.png')">
+                    <img src="images/funerar2.png" alt="Elevator Hidraulic Morga Gama Kold Assist">
                     <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
                 </div>
 
@@ -426,9 +469,9 @@
 
             <!-- 3. GAMA KOLD SALM -->
             <div class="showcase-card interactive-card reveal" data-cat="kold-salm">
-                <!-- POZA 3 FUNERARE: funerar3.png -->
-                <div class="photo-frame white-bg tilt-element" onclick="openLightbox('funerar3.png')">
-                    <img src="funerar3.png" alt="Capac Frigorific Funerar ZAAMORG Gama Kold Salm">
+                <!-- POZA 3 FUNERARE: images/funerar3.png -->
+                <div class="photo-frame tilt-element" onclick="openLightbox('images/funerar3.png')">
+                    <img src="images/funerar3.png" alt="Capac Frigorific Funerar ZAAMORG Gama Kold Salm">
                     <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
                 </div>
 
@@ -470,43 +513,6 @@
             </div>
 
         </div>
-
-        <!-- ================= EXTRA PHOTO SLOTS (funerar4, funerar5, funerar6) ================= -->
-        <div class="photo-gallery-section reveal">
-            <div style="text-align: center; margin-bottom: 32px;">
-                <span class="hero-tag"><i class="fa-solid fa-camera"></i> DETALII DE EXECUȚIE</span>
-                <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.85rem; font-weight: 900; text-transform: uppercase;">IMAGINI DIN PRODUCȚIE</h2>
-            </div>
-
-            <div class="gallery-grid">
-                <!-- POZA 4 FUNERARE: funerar4.png -->
-                <div class="gallery-card tilt-element" onclick="openLightbox('funerar4.png')">
-                    <img src="funerar4.png" alt="Detaliu Echipament Funerar 4">
-                    <div class="gallery-card-footer">
-                        <span>Detaliu Execuție Inox #1</span>
-                        <i class="fa-solid fa-expand"></i>
-                    </div>
-                </div>
-
-                <!-- POZA 5 FUNERARE: funerar5.png -->
-                <div class="gallery-card tilt-element" onclick="openLightbox('funerar5.png')">
-                    <img src="funerar5.png" alt="Detaliu Echipament Funerar 5">
-                    <div class="gallery-card-footer">
-                        <span>Detaliu Execuție Inox #2</span>
-                        <i class="fa-solid fa-expand"></i>
-                    </div>
-                </div>
-
-                <!-- POZA 6 FUNERARE: funerar6.png -->
-                <div class="gallery-card tilt-element" onclick="openLightbox('funerar6.png')">
-                    <img src="funerar6.png" alt="Detaliu Echipament Funerar 6">
-                    <div class="gallery-card-footer">
-                        <span>Detaliu Execuție Inox #3</span>
-                        <i class="fa-solid fa-expand"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- ================= LIGHTBOX ================= -->
@@ -524,21 +530,48 @@
 
     <!-- ================= MOBILE STICKY BAR ================= -->
     <div class="mobile-sticky-bar">
-        <a href="index.html" class="mob-action-item"><i class="fa-solid fa-house"></i><span>Acasă</span></a>
+        <a href="index.html" class="mob-action-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
         <a href="funerare.html" class="mob-action-item active"><i class="fa-solid fa-snowflake"></i><span>Funerare</span></a>
         <a href="frigorifice.html" class="mob-action-item"><i class="fa-solid fa-industry"></i><span>Frigorifice</span></a>
         <a href="tel:0741585655" class="mob-action-item call-now"><i class="fa-solid fa-phone-volume"></i><span>Sună Acum</span></a>
     </div>
 
     <script>
+        const header = document.getElementById('header');
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
+
+        window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 40));
         menuToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
 
         function openLightbox(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.add('active');
         }
+
+        // Eliminare automată fundal alb logo prin Canvas + filtrul SVG deja activ
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.brand-logo').forEach(img => {
+                try {
+                    const c = document.createElement('canvas');
+                    const ctx = c.getContext('2d');
+                    c.width = img.naturalWidth;
+                    c.height = img.naturalHeight;
+                    if (!c.width || !c.height) return;
+                    ctx.drawImage(img, 0, 0);
+                    const imgData = ctx.getImageData(0, 0, c.width, c.height);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        if (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235) {
+                            d[i + 3] = 0;
+                        }
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    img.src = c.toDataURL('image/png');
+                    img.style.filter = 'drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45))';
+                } catch (e) {}
+            });
+        });
 
         function filterCards(cat, btn) {
             document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
