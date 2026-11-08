@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Divizia Funerară & Morgă | Kold Air, Kold Assist, Kold Salm – FRIGO FAB</title>
+    <meta name="description" content="Echipamente frigorifice funerare și de morgă din inox (ISO 9001): Frigidere mortuare Gama Kold Air, Elevatoare hidraulice Kold Assist și Capace frigorifice ZAAMORG Kold Salm. Tel: 0741 585 655.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #030812;
+            --bg-navy: #071324;
+            --bg-card: rgba(10, 25, 47, 0.75);
+            --ice-primary: #0095d9;
+            --ice-bright: #38bdf8;
+            --text-white: #ffffff;
+            --text-silver: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-ice: rgba(56, 189, 248, 0.22);
+            --border-bright: rgba(56, 189, 248, 0.55);
+            --shadow-deep: 0 25px 55px -12px rgba(0, 0, 0, 0.8);
+            --shadow-ice: 0 12px 35px -5px rgba(0, 149, 217, 0.45);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-white);
+            line-height: 1.65;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 18% 12%, rgba(0, 149, 217, 0.16) 0%, transparent 40%),
+                radial-gradient(circle at 82% 55%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+        }
+
+        #frost-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .container { max-width: 1260px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 1; }
+
+        .interactive-card { position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform; }
+        .interactive-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.14), transparent 40%);
+            opacity: 0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1;
+        }
+        .interactive-card:hover::before { opacity: 1; }
+
+        /* ================= HEADER ================= */
+        .top-bar {
+            position: relative; z-index: 1001; background: rgba(2, 6, 13, 0.94);
+            border-bottom: 1px solid var(--border-ice); padding: 9px 5%;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--text-silver);
+        }
+        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 22px; }
+        .top-bar-item { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--text-silver); }
+        .top-bar-item i { color: var(--ice-bright); }
+
+        header {
+            position: sticky; top: 0; width: 100%; z-index: 1000; padding: 14px 5%;
+            background: rgba(3, 8, 18, 0.86); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-ice); display: flex; align-items: center; justify-content: space-between;
+        }
+        .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .brand-logo { height: 50px; width: auto; border-radius: 10px; background: #fff; padding: 4px 10px; box-shadow: 0 4px 20px rgba(0, 149, 217, 0.35); }
+        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; color: var(--text-white); line-height: 1.05; display: block; }
+        .brand-title span { color: var(--ice-bright); }
+        .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
+
+        nav ul { display: flex; list-style: none; align-items: center; gap: 8px; }
+        nav ul li a {
+            color: var(--text-silver); text-decoration: none; font-weight: 600; font-size: 0.91rem;
+            padding: 10px 16px; border-radius: 10px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent;
+        }
+        nav ul li a i { color: var(--ice-bright); }
+        nav ul li a:hover, nav ul li a.active { color: var(--text-white); background: rgba(0, 149, 217, 0.2); border-color: var(--border-ice); }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .header-cta {
+            display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice);
+        }
+        .menu-toggle {
+            display: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 149, 217, 0.15);
+            border: 1px solid var(--border-ice); color: #fff; font-size: 1.3rem; cursor: pointer; align-items: center; justify-content: center;
+        }
+
+        /* ================= PAGE HERO ================= */
+        .page-hero { text-align: center; max-width: 860px; margin: 0 auto; padding: 60px 0 40px; }
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.78rem;
+            letter-spacing: 2px; text-transform: uppercase; color: var(--ice-bright);
+            background: rgba(0, 149, 217, 0.14); border: 1px solid var(--border-ice); padding: 6px 18px; border-radius: 50px; margin-bottom: 16px;
+        }
+        .page-hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 3.8vw, 3.2rem); font-weight: 900; text-transform: uppercase; line-height: 1.12; margin-bottom: 14px; color: var(--text-white); }
+        .page-hero h1 span { color: var(--ice-bright); }
+        .page-hero p { color: var(--text-silver); font-size: 1.02rem; margin-bottom: 28px; }
+
+        .filter-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .filter-tab {
+            background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice); color: var(--text-silver);
+            padding: 11px 22px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.84rem; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;
+        }
+        .filter-tab i { color: var(--ice-bright); }
+        .filter-tab:hover, .filter-tab.active {
+            background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white);
+            border-color: var(--ice-bright); box-shadow: var(--shadow-ice); transform: translateY(-2px);
+        }
+        .filter-tab.active i, .filter-tab:hover i { color: var(--text-white); }
+
+        /* ================= SHOWCASE CARDS ================= */
+        .showcase-list { display: flex; flex-direction: column; gap: 38px; padding: 25px 0 65px; }
+        .showcase-card {
+            display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 38px; align-items: center;
+            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 26px;
+            padding: 34px; box-shadow: var(--shadow-deep); backdrop-filter: blur(16px); transition: var(--transition);
+        }
+        .showcase-card:hover { border-color: var(--ice-bright); }
+
+        .photo-frame {
+            position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-ice);
+            background: #040c18; cursor: zoom-in;
+        }
+        .photo-frame img { width: 100%; height: 390px; object-fit: cover; display: block; transition: transform 0.65s ease; }
+        .photo-frame.white-bg img { background: #fff; object-fit: contain; padding: 18px; }
+        .photo-frame:hover img { transform: scale(1.05); }
+
+        .zoom-badge {
+            position: absolute; bottom: 14px; right: 14px; background: rgba(3, 8, 18, 0.88);
+            backdrop-filter: blur(8px); border: 1px solid var(--border-ice); color: var(--text-white);
+            padding: 6px 13px; border-radius: 50px; font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .zoom-badge i { color: var(--ice-bright); }
+
+        .card-content { position: relative; z-index: 2; }
+        .gama-tag {
+            display: inline-block; font-weight: 700; font-size: 0.76rem;
+            letter-spacing: 1.8px; text-transform: uppercase; color: var(--ice-bright);
+            background: rgba(0, 149, 217, 0.14); border: 1px solid var(--border-ice); padding: 5px 14px; border-radius: 50px; margin-bottom: 10px;
+        }
+        .card-content h2 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.45rem, 2.3vw, 1.95rem); font-weight: 900; text-transform: uppercase; margin-bottom: 12px; line-height: 1.2; color: var(--text-white); }
+        .card-content > p { color: var(--text-silver); font-size: 0.96rem; margin-bottom: 20px; }
+
+        .spec-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .spec-pill {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-ice);
+            border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+        }
+        .spec-pill i { color: var(--ice-bright); font-size: 1.15rem; }
+        .spec-pill strong { display: block; font-size: 0.86rem; color: var(--text-white); line-height: 1.2; }
+        .spec-pill span { font-size: 0.76rem; color: var(--text-muted); }
+
+        /* Interactive Post Selector */
+        .post-selector { margin-bottom: 22px; padding: 14px 16px; border-radius: 14px; background: rgba(0, 149, 217, 0.08); border: 1px solid var(--border-ice); }
+        .post-selector-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ice-bright); margin-bottom: 10px; display: block; }
+        .post-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+        .post-btn {
+            background: rgba(3, 8, 18, 0.75); border: 1px solid var(--border-ice); color: var(--text-silver);
+            padding: 7px 14px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: var(--transition);
+        }
+        .post-btn.active, .post-btn:hover { background: var(--ice-primary); color: var(--text-white); border-color: var(--ice-bright); }
+        .post-dynamic-info { font-size: 0.85rem; color: var(--text-silver); }
+        .post-dynamic-info strong { color: var(--text-white); }
+
+        .action-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .btn-wa {
+            display: inline-flex; align-items: center; gap: 9px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            color: var(--text-white); text-decoration: none; padding: 13px 22px; border-radius: 12px; font-weight: 700; font-size: 0.92rem;
+            box-shadow: var(--shadow-ice); transition: var(--transition); border: 1px solid var(--border-bright);
+        }
+        .btn-wa:hover { transform: translateY(-2px); }
+        .btn-call {
+            display: inline-flex; align-items: center; gap: 9px; background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-ice); color: var(--text-white); text-decoration: none; padding: 13px 22px;
+            border-radius: 12px; font-weight: 700; font-size: 0.92rem; transition: var(--transition);
+        }
+        .btn-call i { color: var(--ice-bright); }
+        .btn-call:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.14); }
+
+        /* ================= EXTRA PHOTO GRID (funerar4, funerar5, funerar6) ================= */
+        .photo-gallery-section { padding-bottom: 85px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .gallery-card {
+            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 20px;
+            overflow: hidden; cursor: zoom-in; transition: var(--transition);
+        }
+        .gallery-card:hover { transform: translateY(-6px); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
+        .gallery-card img { width: 100%; height: 260px; object-fit: cover; display: block; transition: transform 0.6s ease; }
+        .gallery-card:hover img { transform: scale(1.06); }
+        .gallery-card-footer { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 700; color: var(--text-white); }
+        .gallery-card-footer i { color: var(--ice-bright); }
+
+        /* ================= LIGHTBOX & FOOTER ================= */
+        .lightbox {
+            position: fixed; inset: 0; z-index: 3000; background: rgba(2, 6, 13, 0.94);
+            backdrop-filter: blur(16px); display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox-inner { max-width: 920px; width: 100%; position: relative; text-align: center; }
+        .lightbox-inner img { width: 100%; max-height: 78vh; object-fit: contain; border-radius: 16px; border: 1px solid var(--border-bright); background: #030812; }
+        .lightbox-close { position: absolute; top: -15px; right: -15px; width: 42px; height: 42px; border-radius: 50%; background: var(--ice-primary); color: #fff; border: none; font-size: 1.1rem; cursor: pointer; }
+
+        footer { position: relative; z-index: 1; background: #02050b; border-top: 1px solid var(--border-ice); padding: 40px 5% 90px; text-align: center; color: var(--text-muted); font-size: 0.86rem; }
+
+        .mobile-sticky-bar {
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1500;
+            background: rgba(3, 8, 18, 0.96); backdrop-filter: blur(18px); border-top: 1px solid var(--border-ice);
+            padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); grid-template-columns: repeat(4, 1fr); gap: 6px;
+        }
+        .mob-action-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            padding: 8px 4px; border-radius: 10px; text-decoration: none; color: var(--text-silver);
+            font-size: 0.7rem; font-weight: 700; background: rgba(255, 255, 255, 0.03);
+        }
+        .mob-action-item i { font-size: 1.1rem; color: var(--ice-bright); }
+        .mob-action-item.active { background: rgba(0, 149, 217, 0.2); color: var(--text-white); border: 1px solid var(--border-ice); }
+        .mob-action-item.call-now { background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white); }
+        .mob-action-item.call-now i { color: var(--text-white); }
+
+        .reveal { opacity: 0; transform: translateY(26px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 992px) {
+            .top-bar { display: none; }
+            .showcase-card, .gallery-grid { grid-template-columns: 1fr; }
+            .photo-frame img { height: 320px; }
+        }
+        @media (max-width: 768px) {
+            .brand-logo { height: 42px; }
+            .brand-title { font-size: 1.18rem; }
+            .header-cta span { display: none; }
+            .header-cta { padding: 10px 14px; }
+            .menu-toggle { display: inline-flex; }
+            nav {
+                position: fixed; top: 71px; left: 0; width: 100%; background: rgba(3, 8, 18, 0.98);
+                backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-ice); padding: 20px 5%; display: none;
+            }
+            nav.open { display: block; }
+            nav ul { flex-direction: column; align-items: stretch; gap: 8px; }
+            .spec-pills { grid-template-columns: 1fr; }
+            .showcase-card { padding: 22px 16px; }
+            .mobile-sticky-bar { display: grid; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="frost-canvas"></canvas>
+
+    <!-- ================= TOP BAR ================= -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span class="top-bar-item"><i class="fa-solid fa-snowflake"></i> DIVIZIA FUNERARĂ &amp; UNITĂȚI SANITARE (MORGĂ)</span>
+            <span class="top-bar-item"><i class="fa-solid fa-award"></i> Inox AISI 304 • Sistem ISO 9001</span>
+        </div>
+        <div class="top-bar-right">
+            <a href="tel:0741585655" class="top-bar-item" style="color: var(--text-white); font-weight: 700;"><i class="fa-solid fa-phone"></i> 0741.585.655</a>
+        </div>
+    </div>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <a href="index.html" class="brand-wrap">
+            <!-- POZA LOGO: logo.png -->
+            <img src="logo.png" alt="FrigoFab Logo" class="brand-logo">
+            <div>
+                <span class="brand-title">FRIGO<span>FAB</span></span>
+                <span class="brand-subtitle">Divizia Funerară &amp; Morgă</span>
+            </div>
+        </a>
+
+        <nav id="nav-menu">
+            <ul>
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Acasă</a></li>
+                <li><a href="funerare.html" class="active"><i class="fa-solid fa-snowflake"></i> Divizia Funerară &amp; Morgă</a></li>
+                <li><a href="frigorifice.html"><i class="fa-solid fa-industry"></i> Divizia Frigorifice</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <a href="tel:0741585655" class="header-cta">
+                <i class="fa-solid fa-phone-volume"></i>
+                <span>0741 585 655</span>
+            </a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Meniu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- ================= PAGE HERO ================= -->
+        <div class="page-hero reveal">
+            <span class="hero-tag"><i class="fa-solid fa-snowflake"></i> FRIGOFAB &amp; ZAA / ZAAMORG • CONFORM NORME DSP</span>
+            <h1>ECHIPAMENTE <span>FUNERARE &amp; MORGĂ</span></h1>
+            <p>
+                Construcții profesionale din oțel inoxidabil sanitar AISI 304 pentru case funerare, capele, spitale și morgi municipale. Apasă pe orice fotografie pentru mărire.
+            </p>
+
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterCards('all', this)"><i class="fa-solid fa-layer-group"></i> Toate Gamele</button>
+                <button class="filter-tab" onclick="filterCards('kold-air', this)"><i class="fa-solid fa-temperature-low"></i> Gama Kold Air (Frigidere Mortuare)</button>
+                <button class="filter-tab" onclick="filterCards('kold-assist', this)"><i class="fa-solid fa-up-down"></i> Gama Kold Assist (Elevatoare)</button>
+                <button class="filter-tab" onclick="filterCards('kold-salm', this)"><i class="fa-solid fa-wind"></i> Gama Kold Salm (Capace Frigorifice)</button>
+            </div>
+        </div>
+
+        <!-- ================= SHOWCASE CARDS ================= -->
+        <div class="showcase-list">
+
+            <!-- 1. GAMA KOLD AIR -->
+            <div class="showcase-card interactive-card reveal" data-cat="kold-air">
+                <!-- POZA 1 FUNERARE: funerar1.png -->
+                <div class="photo-frame tilt-element" onclick="openLightbox('funerar1.png')">
+                    <img src="funerar1.png" alt="Frigider Mortuar Inox Gama Kold Air">
+                    <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                </div>
+
+                <div class="card-content">
+                    <span class="gama-tag">GAMA KOLD AIR • FRIGIDERE &amp; CAMERE MORGĂ</span>
+                    <h2>Frigidere Mortuare din Inox</h2>
+                    <p>
+                        Proiectate și uzinate integral din inox sanitar AISI 304, cu tăvi extractibile pe rulmenți din inox și izolație de înaltă densitate, adaptate exact spațiului tău.
+                    </p>
+
+                    <div class="post-selector">
+                        <span class="post-selector-title"><i class="fa-solid fa-sliders"></i> Alege configurația dorită:</span>
+                        <div class="post-btns">
+                            <button class="post-btn active" onclick="selectPost('1 Post', 'Compact, ideal pentru case funerare și capele (0°C ... +5°C).', this)">1 Post</button>
+                            <button class="post-btn" onclick="selectPost('2 Posturi', 'Cea mai solicitată variantă verticală cu 2 uși individuale.', this)">2 Posturi</button>
+                            <button class="post-btn" onclick="selectPost('3 Posturi', 'Capacitate optimizată pe verticală pentru spitale și servicii funerare.', this)">3 Posturi</button>
+                            <button class="post-btn" onclick="selectPost('4 - 6 Posturi', 'Sistem modular multi-ușă pentru unități spitalicești și medicină legală.', this)">4–6 Posturi</button>
+                            <button class="post-btn" onclick="selectPost('Cameră Morgă Extinsă', 'Cameră frigorifică de mare capacitate pentru morgi municipale și spitale.', this)">Cameră Morgă</button>
+                        </div>
+                        <div class="post-dynamic-info" id="post-info">
+                            <strong>1 Post:</strong> Compact, ideal pentru case funerare și capele (0°C ... +5°C).
+                        </div>
+                    </div>
+
+                    <div class="spec-pills">
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <div><strong>100% Inox AISI 304</strong><span>Conform cerințelor DSP</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-temperature-arrow-down"></i>
+                            <div><strong>0°C ... -10°C / -20°C</strong><span>Refrigerare sau Congelare</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-arrows-left-right"></i>
+                            <div><strong>Tăvi pe Rulmenți Inox</strong><span>Glisare lină cu blocaj</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-ruler-combined"></i>
+                            <div><strong>Dimensiuni la Comandă</strong><span>Deschidere frontală / laterală</span></div>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <a id="kold-air-wa" href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Frigider%20Mortuar%20Gama%20Kold%20Air%20(1%20Post)." target="_blank" class="btn-wa">
+                            <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Kold Air
+                        </a>
+                        <a href="tel:0741585655" class="btn-call">
+                            <i class="fa-solid fa-phone"></i> 0741 585 655
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. GAMA KOLD ASSIST -->
+            <div class="showcase-card interactive-card reveal" data-cat="kold-assist">
+                <!-- POZA 2 FUNERARE: funerar2.png -->
+                <div class="photo-frame tilt-element" onclick="openLightbox('funerar2.png')">
+                    <img src="funerar2.png" alt="Elevator Hidraulic Morga Gama Kold Assist">
+                    <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                </div>
+
+                <div class="card-content">
+                    <span class="gama-tag">GAMA KOLD ASSIST • MANIPULARE ERGONOMICĂ</span>
+                    <h2>Elevatoare Hidraulice Mortuare</h2>
+                    <p>
+                        Permite ridicarea, transportul și introducerea fără efort a tăvilor la orice nivel al frigiderului mortuar de către un singur operator, în deplină siguranță.
+                    </p>
+
+                    <div class="spec-pills">
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-up-down"></i>
+                            <div><strong>Ridicare Multi-Nivel</strong><span>Aliniere cu etajele 1–4</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-gears"></i>
+                            <div><strong>Hidraulic / Electric</strong><span>Acționare lină fără efort</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            <div><strong>Cadru Inox Heavy-Duty</strong><span>Stabilitate și sarcină mare</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-dharmachakra"></i>
+                            <div><strong>Roți Pivotante cu Frână</strong><span>Blocare sigură la transfer</span></div>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Elevatorul%20Hidraulic%20(Gama%20Kold%20Assist)." target="_blank" class="btn-wa">
+                            <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Kold Assist
+                        </a>
+                        <a href="tel:0741585655" class="btn-call">
+                            <i class="fa-solid fa-phone"></i> 0741 585 655
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. GAMA KOLD SALM -->
+            <div class="showcase-card interactive-card reveal" data-cat="kold-salm">
+                <!-- POZA 3 FUNERARE: funerar3.png -->
+                <div class="photo-frame white-bg tilt-element" onclick="openLightbox('funerar3.png')">
+                    <img src="funerar3.png" alt="Capac Frigorific Funerar ZAAMORG Gama Kold Salm">
+                    <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                </div>
+
+                <div class="card-content">
+                    <span class="gama-tag">GAMA KOLD SALM • MODEL ZAAMORG</span>
+                    <h2>Capace Frigorifice Funerare</h2>
+                    <p>
+                        Capac frigorific profesional din inox cu dom transparent anti-aburire și afișaj digital, proiectat pentru răcire rapidă și silențioasă pe durata priveghiului.
+                    </p>
+
+                    <div class="spec-pills">
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-volume-low"></i>
+                            <div><strong>Agregat Silențios</strong><span>Ideal pentru capele funerare</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-eye"></i>
+                            <div><strong>Dom Anti-Aburire</strong><span>Vizibilitate clară și iluminare</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-microchip"></i>
+                            <div><strong>Termostat Digital</strong><span>Control electronic temperatură</span></div>
+                        </div>
+                        <div class="spec-pill">
+                            <i class="fa-solid fa-feather"></i>
+                            <div><strong>Portabil &amp; Ergonomic</strong><span>Carcasă inox cu mânere</span></div>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Capacul%20Frigorific%20ZAAMORG%20(Gama%20Kold%20Salm)." target="_blank" class="btn-wa">
+                            <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Capac ZAAMORG
+                        </a>
+                        <a href="tel:0741585655" class="btn-call">
+                            <i class="fa-solid fa-phone"></i> 0741 585 655
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= EXTRA PHOTO SLOTS (funerar4, funerar5, funerar6) ================= -->
+        <div class="photo-gallery-section reveal">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <span class="hero-tag"><i class="fa-solid fa-camera"></i> DETALII DE EXECUȚIE</span>
+                <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.85rem; font-weight: 900; text-transform: uppercase;">IMAGINI DIN PRODUCȚIE</h2>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- POZA 4 FUNERARE: funerar4.png -->
+                <div class="gallery-card tilt-element" onclick="openLightbox('funerar4.png')">
+                    <img src="funerar4.png" alt="Detaliu Echipament Funerar 4">
+                    <div class="gallery-card-footer">
+                        <span>Detaliu Execuție Inox #1</span>
+                        <i class="fa-solid fa-expand"></i>
+                    </div>
+                </div>
+
+                <!-- POZA 5 FUNERARE: funerar5.png -->
+                <div class="gallery-card tilt-element" onclick="openLightbox('funerar5.png')">
+                    <img src="funerar5.png" alt="Detaliu Echipament Funerar 5">
+                    <div class="gallery-card-footer">
+                        <span>Detaliu Execuție Inox #2</span>
+                        <i class="fa-solid fa-expand"></i>
+                    </div>
+                </div>
+
+                <!-- POZA 6 FUNERARE: funerar6.png -->
+                <div class="gallery-card tilt-element" onclick="openLightbox('funerar6.png')">
+                    <img src="funerar6.png" alt="Detaliu Echipament Funerar 6">
+                    <div class="gallery-card-footer">
+                        <span>Detaliu Execuție Inox #3</span>
+                        <i class="fa-solid fa-expand"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= LIGHTBOX ================= -->
+    <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+        <div class="lightbox-inner">
+            <button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+            <img id="lightbox-img" src="" alt="Echipament Funerar FrigoFab">
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <p>&copy; 2026 <strong>FRIGO FAB (SC PROD SONRESA SRL)</strong> • Lupești, Jud. Bacău • Tel: 0741 585 655 • Sistem Certificat ISO 9001</p>
+    </footer>
+
+    <!-- ================= MOBILE STICKY BAR ================= -->
+    <div class="mobile-sticky-bar">
+        <a href="index.html" class="mob-action-item"><i class="fa-solid fa-house"></i><span>Acasă</span></a>
+        <a href="funerare.html" class="mob-action-item active"><i class="fa-solid fa-snowflake"></i><span>Funerare</span></a>
+        <a href="frigorifice.html" class="mob-action-item"><i class="fa-solid fa-industry"></i><span>Frigorifice</span></a>
+        <a href="tel:0741585655" class="mob-action-item call-now"><i class="fa-solid fa-phone-volume"></i><span>Sună Acum</span></a>
+    </div>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        menuToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function filterCards(cat, btn) {
+            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.showcase-card').forEach(card => {
+                card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'grid' : 'none';
+            });
+        }
+
+        function selectPost(label, desc, btn) {
+            document.querySelectorAll('.post-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('post-info').innerHTML = `<strong>${label}:</strong> ${desc}`;
+            document.getElementById('kold-air-wa').href = `https://wa.me/40741585655?text=${encodeURIComponent('Bună ziua FrigoFab! Doresc ofertă pentru Frigider Mortuar Gama Kold Air (' + label + ').')}`;
+        }
+
+        document.querySelectorAll('.interactive-card, .tilt-element').forEach(el => {
+            el.addEventListener('mousemove', e => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                el.style.setProperty('--mouse-x', `${x}px`);
+                el.style.setProperty('--mouse-y', `${y}px`);
+                if (window.innerWidth > 992 && el.classList.contains('tilt-element')) {
+                    const rotateX = ((y - rect.height / 2) / rect.height) * -5;
+                    const rotateY = ((x - rect.width / 2) / rect.width) * 5;
+                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                }
+            });
+            el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Interactive Ice Constellation Canvas
+        const canvas = document.getElementById('frost-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [], mouse = { x: null, y: null };
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        for (let i = 0; i < 40; i++) {
+            particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 + 0.8, sy: Math.random() * 0.4 + 0.15, sx: (Math.random() - 0.5) * 0.25, a: Math.random() * 0.45 + 0.2 });
+        }
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(56, 189, 248, ${p.a})`; ctx.fill();
+                p.y += p.sy; p.x += p.sx; if (p.y > canvas.height) p.y = -5;
+                if (mouse.x) {
+                    const dist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+                    if (dist < 120) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 120) * 0.22})`; ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>

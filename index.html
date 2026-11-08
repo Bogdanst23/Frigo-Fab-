@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>FRIGO FAB | Echipamente Frigorifice Profesionale – Funerar, Industrial & Comercial</title>
+    <meta name="description" content="SC PROD SONRESA SRL (FrigoFab) - Proiectare, construcție și service echipamente frigorifice profesionale în sistem ISO 9001. Lupești, Jud. Bacău. Tel: 0741 585 655.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #030812;
+            --bg-navy: #071324;
+            --bg-card: rgba(10, 25, 47, 0.72);
+            --ice-primary: #0095d9;
+            --ice-bright: #38bdf8;
+            --text-white: #ffffff;
+            --text-silver: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-ice: rgba(56, 189, 248, 0.22);
+            --border-bright: rgba(56, 189, 248, 0.55);
+            --shadow-deep: 0 25px 55px -12px rgba(0, 0, 0, 0.8);
+            --shadow-ice: 0 12px 35px -5px rgba(0, 149, 217, 0.45);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-white);
+            line-height: 1.65;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 149, 217, 0.16) 0%, transparent 40%),
+                radial-gradient(circle at 85% 70%, rgba(56, 189, 248, 0.1) 0%, transparent 42%);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--ice-primary); border-radius: 4px; }
+
+        #frost-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 0 5%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= INTERACTIVE CARDS & ANIMATIONS ================= */
+        .interactive-card {
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .interactive-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.15), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .interactive-card:hover::before { opacity: 1; }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes sheenSweep {
+            0% { left: -120%; }
+            25%, 100% { left: 140%; }
+        }
+
+        /* ================= TOP BAR ================= */
+        .top-bar {
+            position: relative;
+            z-index: 1001;
+            background: rgba(2, 6, 13, 0.94);
+            border-bottom: 1px solid var(--border-ice);
+            padding: 9px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-silver);
+        }
+
+        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 24px; }
+        .top-bar-item { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-silver); transition: var(--transition); }
+        .top-bar-item i { color: var(--ice-bright); }
+        .top-bar-item:hover { color: var(--text-white); }
+
+        /* ================= HEADER ================= */
+        header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 14px 5%;
+            background: rgba(3, 8, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-ice);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 10px 5%;
+            background: rgba(3, 8, 18, 0.96);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+        }
+
+        .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 4px 10px;
+            box-shadow: 0 4px 20px rgba(0, 149, 217, 0.35);
+            transition: var(--transition);
+        }
+        .brand-wrap:hover .brand-logo { transform: scale(1.05); }
+        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-white); line-height: 1.05; display: block; }
+        .brand-title span { color: var(--ice-bright); }
+        .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
+
+        nav ul { display: flex; list-style: none; align-items: center; gap: 8px; }
+        nav ul li a {
+            color: var(--text-silver);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.91rem;
+            padding: 10px 16px;
+            border-radius: 10px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+        }
+        nav ul li a i { color: var(--ice-bright); }
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--text-white);
+            background: rgba(0, 149, 217, 0.18);
+            border-color: var(--border-ice);
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.12);
+        }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .header-cta {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            color: var(--text-white);
+            text-decoration: none;
+            padding: 11px 22px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            box-shadow: var(--shadow-ice);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            transition: var(--transition);
+        }
+        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.6); }
+
+        .menu-toggle {
+            display: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(0, 149, 217, 0.15);
+            border: 1px solid var(--border-ice);
+            color: var(--text-white);
+            font-size: 1.3rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ================= HERO ================= */
+        .hero {
+            padding: 65px 0 80px;
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 15px;
+            border-radius: 50px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: rgba(0, 149, 217, 0.14);
+            border: 1px solid var(--border-ice);
+            color: var(--text-white);
+        }
+        .badge i { color: var(--ice-bright); }
+
+        .dot-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ice-bright);
+            box-shadow: 0 0 12px var(--ice-bright);
+            animation: pulseIce 2s infinite;
+        }
+        @keyframes pulseIce { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.5; } }
+
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.1rem, 4vw, 3.45rem);
+            font-weight: 900;
+            line-height: 1.12;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: var(--text-white);
+        }
+        .hero h1 span { color: var(--ice-bright); }
+
+        .hero p { font-size: 1.05rem; color: var(--text-silver); max-width: 600px; margin-bottom: 30px; }
+
+        .hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 36px; }
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--ice-primary), #0369a1);
+            color: var(--text-white);
+            padding: 15px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.94rem;
+            text-decoration: none;
+            box-shadow: var(--shadow-ice);
+            transition: var(--transition);
+            border: 1px solid var(--border-bright);
+            cursor: pointer;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-25deg);
+            animation: sheenSweep 5s infinite;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(0, 149, 217, 0.65); }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(10, 25, 47, 0.8);
+            color: var(--text-white);
+            padding: 15px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.94rem;
+            text-decoration: none;
+            border: 1px solid var(--border-ice);
+            transition: var(--transition);
+        }
+        .btn-secondary i { color: var(--ice-bright); }
+        .btn-secondary:hover {
+            background: rgba(0, 149, 217, 0.16);
+            border-color: var(--ice-bright);
+            transform: translateY(-3px);
+        }
+
+        /* Animated Counters Row */
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            padding-top: 26px;
+            border-top: 1px solid var(--border-ice);
+        }
+        .stat-box strong {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: var(--text-white);
+        }
+        .stat-box strong span { color: var(--ice-bright); }
+        .stat-box small { font-size: 0.82rem; color: var(--text-muted); }
+
+        .hero-visual { animation: floatSlow 6s ease-in-out infinite; }
+        .hero-main-frame {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-bright);
+            box-shadow: var(--shadow-deep), 0 0 40px rgba(0, 149, 217, 0.22);
+            background: var(--bg-navy);
+            cursor: zoom-in;
+        }
+        .hero-main-frame img {
+            width: 100%;
+            height: 490px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.7s ease;
+        }
+        .hero-main-frame:hover img { transform: scale(1.05); }
+
+        .hero-floating-badge {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            right: 18px;
+            background: rgba(3, 8, 18, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-ice);
+            padding: 15px 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(0, 149, 217, 0.2);
+            color: var(--ice-bright);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .hero-floating-badge h4 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; color: var(--text-white); }
+        .hero-floating-badge span { font-size: 0.78rem; color: var(--text-silver); }
+
+        /* ================= SECTIONS ================= */
+        section { padding: 85px 0; position: relative; z-index: 1; }
+        .section-header { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--ice-bright);
+            background: rgba(0, 149, 217, 0.12);
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--border-ice);
+            margin-bottom: 12px;
+        }
+        .section-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 900; text-transform: uppercase; margin-bottom: 12px; color: var(--text-white); }
+        .section-desc { color: var(--text-silver); font-size: 1rem; }
+
+        /* ================= PORTAL CELE 2 DIVIZII ================= */
+        .divisions-portal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .portal-card {
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-ice);
+            background: var(--bg-card);
+            box-shadow: var(--shadow-deep);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            backdrop-filter: blur(14px);
+        }
+        .portal-card:hover { border-color: var(--ice-bright); box-shadow: 0 25px 55px rgba(0, 149, 217, 0.3); }
+
+        .portal-img-header { position: relative; height: 290px; overflow: hidden; cursor: zoom-in; }
+        .portal-img-header img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+        .portal-card:hover .portal-img-header img { transform: scale(1.06); }
+
+        .portal-body { padding: 32px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 2; }
+        .portal-body h3 { font-family: 'Montserrat', sans-serif; font-size: 1.45rem; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; color: var(--text-white); }
+        .portal-body p { color: var(--text-silver); font-size: 0.96rem; margin-bottom: 20px; }
+
+        .portal-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+        .portal-tag {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-ice);
+            padding: 6px 13px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-silver);
+        }
+
+        /* ================= CINE SUNTEM & 5 DIRECTII ================= */
+        .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; margin-bottom: 50px; }
+        .about-box { background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 24px; padding: 36px; box-shadow: var(--shadow-deep); }
+        .about-box h3 { font-family: 'Montserrat', sans-serif; font-size: 1.45rem; margin-bottom: 14px; color: var(--text-white); }
+        .about-list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+        .about-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; color: var(--text-silver); }
+        .about-list li i { color: var(--ice-bright); font-size: 1.1rem; margin-top: 4px; }
+        .highlight-banner {
+            margin-top: 22px;
+            padding: 15px 18px;
+            border-radius: 12px;
+            background: rgba(0, 149, 217, 0.14);
+            border-left: 3px solid var(--ice-bright);
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--text-white);
+        }
+
+        .services-hub { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+        .service-node {
+            background: var(--bg-card);
+            border: 1px solid var(--border-ice);
+            border-radius: 20px;
+            padding: 24px 16px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .service-node:hover { transform: translateY(-7px); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
+        .service-node .node-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 14px;
+            border-radius: 16px;
+            background: rgba(0, 149, 217, 0.16);
+            border: 1px solid var(--border-bright);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--ice-bright);
+            transition: var(--transition);
+        }
+        .service-node:hover .node-icon { background: var(--ice-primary); color: var(--text-white); transform: rotateY(180deg); }
+        .service-node h4 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; text-transform: uppercase; margin-bottom: 6px; color: var(--text-white); }
+        .service-node p { font-size: 0.84rem; color: var(--text-silver); }
+
+        /* ================= FULGII S, P, A, E ================= */
+        .snowflake-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+        .snowflake-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-ice);
+            border-radius: 22px;
+            padding: 28px 22px;
+            transition: var(--transition);
+        }
+        .snowflake-card:hover { transform: translateY(-8px); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
+        .flake-word { display: flex; align-items: center; margin-bottom: 12px; }
+        .flake-svg-letter { width: 60px; height: 60px; flex-shrink: 0; filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.45)); transition: transform 0.5s ease; }
+        .snowflake-card:hover .flake-svg-letter { transform: scale(1.1) rotate(-6deg); }
+        .flake-rest-word { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--text-white); margin-left: -4px; }
+        .snowflake-card p { color: var(--text-silver); font-size: 0.91rem; padding-left: 10px; border-left: 2px solid var(--ice-bright); }
+
+        /* ================= CONTACT ================= */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 38px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-ice);
+            border-radius: 26px;
+            padding: 42px;
+            box-shadow: var(--shadow-deep);
+        }
+        .contact-info-list { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-ice);
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-white);
+            transition: var(--transition);
+        }
+        .contact-item:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.14); transform: translateX(5px); }
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 149, 217, 0.2);
+            color: var(--ice-bright);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .social-links { display: flex; gap: 12px; }
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-white);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-ice);
+            transition: var(--transition);
+        }
+        .social-btn i { color: var(--ice-bright); }
+        .social-btn:hover { background: var(--ice-primary); border-color: var(--ice-bright); }
+        .social-btn:hover i { color: var(--text-white); }
+
+        .contact-form { display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 2; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(3, 8, 18, 0.85);
+            border: 1px solid var(--border-ice);
+            color: var(--text-white);
+            font-family: inherit;
+            font-size: 0.94rem;
+            transition: var(--transition);
+        }
+        .form-control:focus { outline: none; border-color: var(--ice-bright); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+        textarea.form-control { resize: vertical; min-height: 105px; }
+
+        /* ================= LIGHTBOX & FOOTER ================= */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            background: rgba(2, 6, 13, 0.94);
+            backdrop-filter: blur(16px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox-inner { max-width: 920px; width: 100%; position: relative; text-align: center; }
+        .lightbox-inner img { width: 100%; max-height: 78vh; object-fit: contain; border-radius: 16px; border: 1px solid var(--border-bright); background: #030812; }
+        .lightbox-close { position: absolute; top: -15px; right: -15px; width: 42px; height: 42px; border-radius: 50%; background: var(--ice-primary); color: #fff; border: none; font-size: 1.1rem; cursor: pointer; }
+
+        footer { position: relative; z-index: 1; background: #02050b; border-top: 1px solid var(--border-ice); padding: 45px 5% 90px; }
+        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .legal-badges { display: flex; gap: 12px; }
+        .legal-btn { padding: 8px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice); color: var(--text-silver); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: var(--transition); }
+        .legal-btn:hover { color: var(--text-white); border-color: var(--ice-bright); }
+        .footer-bottom { padding-top: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem; }
+
+        /* ================= MOBILE STICKY BAR ================= */
+        .mobile-sticky-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1500;
+            background: rgba(3, 8, 18, 0.96);
+            backdrop-filter: blur(18px);
+            border-top: 1px solid var(--border-ice);
+            padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .mob-action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 8px 4px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-silver);
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+        }
+        .mob-action-item i { font-size: 1.1rem; color: var(--ice-bright); }
+        .mob-action-item.active { background: rgba(0, 149, 217, 0.2); color: var(--text-white); border-color: var(--border-ice); }
+        .mob-action-item.call-now { background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white); }
+        .mob-action-item.call-now i { color: var(--text-white); }
+
+        .reveal { opacity: 0; transform: translateY(26px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1100px) {
+            .services-hub { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+            .snowflake-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 992px) {
+            .top-bar { display: none; }
+            .hero, .divisions-portal-grid, .about-grid, .contact-wrapper { grid-template-columns: 1fr; }
+            .hero-main-frame img { height: 370px; }
+        }
+        @media (max-width: 768px) {
+            .brand-logo { height: 42px; }
+            .brand-title { font-size: 1.18rem; }
+            .header-cta span { display: none; }
+            .header-cta { padding: 10px 14px; }
+            .menu-toggle { display: inline-flex; }
+            nav {
+                position: fixed;
+                top: 71px;
+                left: 0;
+                width: 100%;
+                background: rgba(3, 8, 18, 0.98);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border-ice);
+                padding: 20px 5%;
+                display: none;
+            }
+            nav.open { display: block; }
+            nav ul { flex-direction: column; align-items: stretch; gap: 8px; }
+            nav ul li a { padding: 13px 16px; font-size: 0.96rem; }
+            .snowflake-grid, .form-row, .hero-stats { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
+            .portal-body, .about-box, .contact-wrapper { padding: 24px 18px; }
+            .mobile-sticky-bar { display: grid; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="frost-canvas"></canvas>
+
+    <!-- ================= TOP BAR ================= -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span class="top-bar-item"><i class="fa-solid fa-building-shield"></i> SC PROD SONRESA SRL • Sistem ISO 9001</span>
+            <span class="top-bar-item"><i class="fa-solid fa-location-dot"></i> Lupești, Jud. Bacău, România</span>
+        </div>
+        <div class="top-bar-right">
+            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
+            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
+            <a href="tel:0741585655" class="top-bar-item" style="color: var(--text-white); font-weight: 700;"><i class="fa-solid fa-phone"></i> 0741.585.655</a>
+        </div>
+    </div>
+
+    <!-- ================= HEADER ================= -->
+    <header id="header">
+        <a href="index.html" class="brand-wrap">
+            <!-- POZA LOGO: logo.png -->
+            <img src="logo.png" alt="FrigoFab Logo" class="brand-logo">
+            <div>
+                <span class="brand-title">FRIGO<span>FAB</span></span>
+                <span class="brand-subtitle">Turn On Posibilităților</span>
+            </div>
+        </a>
+
+        <nav id="nav-menu">
+            <ul>
+                <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Acasă</a></li>
+                <li><a href="funerare.html"><i class="fa-solid fa-snowflake"></i> Divizia Funerară &amp; Morgă</a></li>
+                <li><a href="frigorifice.html"><i class="fa-solid fa-industry"></i> Divizia Frigorifice</a></li>
+                <li><a href="#de-ce-noi">De Ce Noi</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <a href="tel:0741585655" class="header-cta">
+                <i class="fa-solid fa-phone-volume"></i>
+                <span>0741 585 655</span>
+            </a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Meniu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- ================= HERO SECTION ================= -->
+        <div class="hero">
+            <div class="reveal">
+                <div class="hero-badges">
+                    <span class="badge"><span class="dot-pulse"></span> TURN ON POSIBILITĂȚILOR</span>
+                    <span class="badge"><i class="fa-solid fa-award"></i> ISO 9001 Certificat</span>
+                    <span class="badge"><i class="fa-solid fa-snowflake"></i> FrigoFab &amp; ZAA / ZAAMORG</span>
+                </div>
+
+                <h1>
+                    INGINERIE FRIGORIFICĂ <br>
+                    <span>DE ÎNALTĂ PRECIZIE</span>
+                </h1>
+
+                <p>
+                    <strong>SC PROD SONRESA SRL</strong> proiectează, construiește și instalează echipamente frigorifice profesionale din inox pentru <strong>sectorul funerar &amp; morgi</strong>, precum și <strong>instalații frigorifice comerciale, industriale și auto</strong>.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="funerare.html" class="btn-primary">
+                        <i class="fa-solid fa-snowflake"></i> Divizia Funerară &amp; Morgă
+                    </a>
+                    <a href="frigorifice.html" class="btn-secondary">
+                        <i class="fa-solid fa-industry"></i> Divizia Frigorifice &amp; Industrial
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-box">
+                        <strong><span>+</span><span class="counter" data-target="10">0</span> Ani</strong>
+                        <small>Experiență în Producție</small>
+                    </div>
+                    <div class="stat-box">
+                        <strong>ISO <span>9001</span></strong>
+                        <small>Managementul Calității</small>
+                    </div>
+                    <div class="stat-box">
+                        <strong><span class="counter" data-target="100">0</span><span>%</span> Inox</strong>
+                        <small>Execuție Personalizată</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual reveal">
+                <!-- POZA 1 PRIMA PAGINA: general1.png -->
+                <div class="hero-main-frame tilt-element" onclick="openLightbox('general1.png')">
+                    <img src="general1.png" alt="Echipamente Frigorifice Profesionale FrigoFab">
+                    <div class="hero-floating-badge">
+                        <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div>
+                            <h4>Producție Românească Certificată ISO 9001</h4>
+                            <span>Inox Alimentar &amp; Sanitar • Lupești, Jud. Bacău</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PORTAL CELE 2 DIVIZII ================= -->
+        <section id="divizii">
+            <div class="section-header reveal">
+                <span class="section-tag"><i class="fa-solid fa-layer-group"></i> PORTOFOLIU SPECIALIZAT</span>
+                <h2 class="section-title">ALEGE DIVIZIA DE INTERES</h2>
+                <p class="section-desc">
+                    Explorează paginile dedicate fiecărei divizii pentru fotografii reale, specificații tehnice și configurare rapidă.
+                </p>
+            </div>
+
+            <div class="divisions-portal-grid">
+                <!-- Portal 1: Funerare -->
+                <div class="portal-card interactive-card tilt-element reveal">
+                    <!-- POZA 2 PRIMA PAGINA: general2.png -->
+                    <div class="portal-img-header" onclick="openLightbox('general2.png')">
+                        <img src="general2.png" alt="Divizia Funerara si Morga FrigoFab">
+                    </div>
+                    <div class="portal-body">
+                        <div>
+                            <h3>Divizia Funerară &amp; Morgă</h3>
+                            <p>
+                                Echipamente din oțel inoxidabil AISI 304 pentru case funerare, capele și spitale: frigidere mortuare cu tăvi pe role, elevatoare hidraulice și capace frigorifice ZAAMORG.
+                            </p>
+                            <div class="portal-tags">
+                                <span class="portal-tag">Gama Kold Air (Frigidere Mortuare)</span>
+                                <span class="portal-tag">Gama Kold Assist (Elevator Hidraulic)</span>
+                                <span class="portal-tag">Gama Kold Salm (Capac Frigorific)</span>
+                                <span class="portal-tag">Camere Morgă Spitale</span>
+                            </div>
+                        </div>
+                        <a href="funerare.html" class="btn-primary" style="width: 100%;">
+                            <span>Deschide Divizia Funerară &amp; Morgă</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Portal 2: Frigorifice -->
+                <div class="portal-card interactive-card tilt-element reveal">
+                    <!-- POZA 3 PRIMA PAGINA: general3.png -->
+                    <div class="portal-img-header" onclick="openLightbox('general3.png')">
+                        <img src="general3.png" alt="Divizia Frigorifice Comerciale si Industriale">
+                    </div>
+                    <div class="portal-body">
+                        <div>
+                            <h3>Divizia Frigorifice &amp; Comercial</h3>
+                            <p>
+                                Proiectare, execuție și service pentru camere frigorifice de refrigerare și congelare, agregate frigorifice, vitrine verticale comerciale, dulapuri inox și sisteme auto.
+                            </p>
+                            <div class="portal-tags">
+                                <span class="portal-tag">Camere Frigorifice PUR/PIR</span>
+                                <span class="portal-tag">Vitrine Verticale Comerciale</span>
+                                <span class="portal-tag">Agregate &amp; Suflante Frigorifice</span>
+                                <span class="portal-tag">Frigo Auto • Retrofit &amp; Service</span>
+                            </div>
+                        </div>
+                        <a href="frigorifice.html" class="btn-secondary" style="width: 100%;">
+                            <span>Deschide Divizia Frigorifice</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CINE SUNTEM & 5 DIRECTII ================= -->
+        <section id="cine-suntem">
+            <div class="section-header reveal">
+                <span class="section-tag"><i class="fa-solid fa-building"></i> SC PROD SONRESA SRL</span>
+                <h2 class="section-title">CINE SUNTEM</h2>
+                <p class="section-desc">
+                    Producție, Service și Vânzări în sistem certificat ISO 9001, direct din fabrica din Lupești, Județul Bacău.
+                </p>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-box interactive-card reveal">
+                    <h3>Peste 10 Ani de Calitate și Fiabilitate</h3>
+                    <p style="color: var(--text-silver);">
+                        Construim echipamente frigorifice durabile și eficiente energetic, adaptate exact spațiului și cerințelor termice ale fiecărui partener.
+                    </p>
+                    <ul class="about-list">
+                        <li><i class="fa-solid fa-circle-check"></i> <span><strong>Execuție la Comandă:</strong> Configurăm fiecare produs după dimensiunile locației tale.</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span><strong>Suport Tehnic Integrat:</strong> De la proiectare și uzinare în inox, până la montaj și service post-vânzare.</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span><strong>Management ISO 9001:</strong> Control riguros al etanșeității, izolației și automatizării.</span></li>
+                    </ul>
+                    <div class="highlight-banner">
+                        <i class="fa-solid fa-snowflake"></i> Realizăm și camere frigorifice cu capacitate extinsă pentru morgile municipale, spitale și centre logistice!
+                    </div>
+                </div>
+
+                <!-- POZA 4 PRIMA PAGINA: general4.png -->
+                <div class="hero-main-frame tilt-element reveal" onclick="openLightbox('general4.png')">
+                    <img src="general4.png" alt="Productie Echipamente FrigoFab" style="background:#fff; object-fit:contain; padding:18px; height: 410px;">
+                </div>
+            </div>
+
+            <div class="services-hub reveal">
+                <div class="service-node interactive-card">
+                    <div class="node-icon"><i class="fa-solid fa-gears"></i></div>
+                    <h4>Producție</h4>
+                    <p>Uzinare în atelier propriu cu inox alimentar și sanitar.</p>
+                </div>
+                <div class="service-node interactive-card">
+                    <div class="node-icon"><i class="fa-solid fa-handshake"></i></div>
+                    <h4>Vânzări</h4>
+                    <p>Livrare echipamente standard și la comandă în toată țara.</p>
+                </div>
+                <div class="service-node interactive-card">
+                    <div class="node-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                    <h4>Service &amp; Mentenanță</h4>
+                    <p>Intervenții rapide în garanție și post-garanție.</p>
+                </div>
+                <div class="service-node interactive-card">
+                    <div class="node-icon"><i class="fa-solid fa-comments"></i></div>
+                    <h4>Consultanță</h4>
+                    <p>Calcul de bilanț termic și proiectare adaptată locației.</p>
+                </div>
+                <div class="service-node interactive-card">
+                    <div class="node-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <h4>Retrofit &amp; Programare</h4>
+                    <p>Modernizare instalații și automatizări digitale.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DE CE SA NE ALEGI (S, P, A, E) ================= -->
+        <section id="de-ce-noi">
+            <div class="section-header reveal">
+                <span class="section-tag"><i class="fa-solid fa-snowflake"></i> GARANȚIA CALITĂȚII</span>
+                <h2 class="section-title">DE CE SĂ NE ALEGI</h2>
+            </div>
+
+            <div class="snowflake-grid">
+                <div class="snowflake-card interactive-card tilt-element reveal">
+                    <div class="flake-word">
+                        <svg class="flake-svg-letter" viewBox="0 0 100 100">
+                            <g stroke="#38bdf8" stroke-width="4" stroke-linecap="round">
+                                <line x1="50" y1="8" x2="50" y2="92"/><line x1="50" y1="50" x2="10" y2="50"/>
+                                <line x1="22" y1="42" x2="14" y2="50"/><line x1="22" y1="58" x2="14" y2="50"/>
+                                <line x1="50" y1="50" x2="18" y2="18"/><line x1="50" y1="50" x2="18" y2="82"/>
+                            </g>
+                            <text x="48" y="74" font-family="Montserrat, sans-serif" font-weight="900" font-size="64" fill="#ffffff">S</text>
+                        </svg>
+                        <span class="flake-rest-word">iguranță</span>
+                    </div>
+                    <p>Experiență de peste 10 ani în producție și certificare ISO 9001.</p>
+                </div>
+
+                <div class="snowflake-card interactive-card tilt-element reveal">
+                    <div class="flake-word">
+                        <svg class="flake-svg-letter" viewBox="0 0 100 100">
+                            <g stroke="#38bdf8" stroke-width="4" stroke-linecap="round">
+                                <line x1="50" y1="8" x2="50" y2="92"/><line x1="50" y1="50" x2="10" y2="50"/>
+                                <line x1="22" y1="42" x2="14" y2="50"/><line x1="22" y1="58" x2="14" y2="50"/>
+                                <line x1="50" y1="50" x2="18" y2="18"/><line x1="50" y1="50" x2="18" y2="82"/>
+                            </g>
+                            <text x="48" y="74" font-family="Montserrat, sans-serif" font-weight="900" font-size="64" fill="#ffffff">P</text>
+                        </svg>
+                        <span class="flake-rest-word">rofesionalism</span>
+                    </div>
+                    <p>Specialiști cu experiență în fiecare etapă a proiectului tehnic.</p>
+                </div>
+
+                <div class="snowflake-card interactive-card tilt-element reveal">
+                    <div class="flake-word">
+                        <svg class="flake-svg-letter" viewBox="0 0 100 100">
+                            <g stroke="#38bdf8" stroke-width="4" stroke-linecap="round">
+                                <line x1="50" y1="8" x2="50" y2="92"/><line x1="50" y1="50" x2="10" y2="50"/>
+                                <line x1="22" y1="42" x2="14" y2="50"/><line x1="22" y1="58" x2="14" y2="50"/>
+                                <line x1="50" y1="50" x2="18" y2="18"/><line x1="50" y1="50" x2="18" y2="82"/>
+                            </g>
+                            <text x="47" y="74" font-family="Montserrat, sans-serif" font-weight="900" font-size="64" fill="#ffffff">A</text>
+                        </svg>
+                        <span class="flake-rest-word">daptabil</span>
+                    </div>
+                    <p>Soluții eficiente adaptate nevoilor și spațiului fiecărui partener.</p>
+                </div>
+
+                <div class="snowflake-card interactive-card tilt-element reveal">
+                    <div class="flake-word">
+                        <svg class="flake-svg-letter" viewBox="0 0 100 100">
+                            <g stroke="#38bdf8" stroke-width="4" stroke-linecap="round">
+                                <line x1="50" y1="8" x2="50" y2="92"/><line x1="50" y1="50" x2="10" y2="50"/>
+                                <line x1="22" y1="42" x2="14" y2="50"/><line x1="22" y1="58" x2="14" y2="50"/>
+                                <line x1="50" y1="50" x2="18" y2="18"/><line x1="50" y1="50" x2="18" y2="82"/>
+                            </g>
+                            <text x="48" y="74" font-family="Montserrat, sans-serif" font-weight="900" font-size="64" fill="#ffffff">E</text>
+                        </svg>
+                        <span class="flake-rest-word">voluție</span>
+                    </div>
+                    <p>Dorința de evoluție permanentă a produselor concepute.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CONTACT ================= -->
+        <section id="contact">
+            <div class="contact-wrapper interactive-card reveal">
+                <div>
+                    <span class="section-tag"><i class="fa-solid fa-headset"></i> CONTACT DIRECT</span>
+                    <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 900; margin-bottom: 8px;">SOLICITĂ OFERTĂ</h2>
+                    <p style="color: var(--text-silver); font-size: 0.95rem;">Discută direct cu un inginer FrigoFab pentru configurarea echipamentului.</p>
+
+                    <div class="contact-info-list">
+                        <a href="tel:0741585655" class="contact-item">
+                            <div class="contact-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                            <div>
+                                <span style="font-size: 0.78rem; color: var(--text-muted);">Telefon Vânzări &amp; Comenzi</span>
+                                <h4 style="font-size: 1.25rem; color: var(--text-white);">0741 585 655</h4>
+                            </div>
+                        </a>
+
+                        <a href="https://wa.me/40741585655" target="_blank" class="contact-item">
+                            <div class="contact-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                            <div>
+                                <span style="font-size: 0.78rem; color: var(--text-muted);">WhatsApp Direct</span>
+                                <h4>0741.585.655 – Oferte Rapide</h4>
+                            </div>
+                        </a>
+
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <span style="font-size: 0.78rem; color: var(--text-muted);">Fabrică &amp; Sediu</span>
+                                <h4>Lupești, Jud. Bacău, România</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" class="social-btn"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
+                        <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" class="social-btn"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
+                    </div>
+                </div>
+
+                <form class="contact-form" id="offer-form">
+                    <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.25rem;">Trimite o Cerere Rapidă</h3>
+                    <div class="form-row">
+                        <input type="text" id="nume" class="form-control" placeholder="Numele tău / Compania *" required>
+                        <input type="tel" id="telefon" class="form-control" placeholder="Număr de telefon *" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="localitate" class="form-control" placeholder="Localitate / Județ">
+                        <select id="gama" class="form-control" required>
+                            <option value="">Alege gama de interes *</option>
+                            <option value="Gama Kold Air (Frigider Mortuar)">Gama Kold Air (Frigider Mortuar)</option>
+                            <option value="Gama Kold Assist (Elevator Hidraulic)">Gama Kold Assist (Elevator Hidraulic)</option>
+                            <option value="Gama Kold Salm (Capac Frigorific)">Gama Kold Salm (Capac Frigorific)</option>
+                            <option value="Camere Frigorifice / Vitrine Comerciale">Camere Frigorifice / Vitrine Comerciale</option>
+                            <option value="Frigo Auto / Retrofit / Service">Frigo Auto / Retrofit / Service</option>
+                        </select>
+                    </div>
+                    <textarea id="mesaj" class="form-control" placeholder="Detalii (număr de posturi, dimensiuni, regim termic)..."></textarea>
+                    <button type="submit" class="btn-primary" style="width: 100%;">
+                        <i class="fa-brands fa-whatsapp"></i> Trimite Solicitarea
+                    </button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= LIGHTBOX ================= -->
+    <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+        <div class="lightbox-inner">
+            <button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+            <img id="lightbox-img" src="" alt="Echipament FrigoFab">
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="footer-top">
+            <div class="brand-wrap">
+                <img src="logo.png" alt="FrigoFab Logo" class="brand-logo" style="height: 44px;">
+                <div>
+                    <span class="brand-title" style="font-size: 1.2rem;">FRIGO<span>FAB</span></span>
+                    <span class="brand-subtitle">SC PROD SONRESA SRL • Lupești, Jud. Bacău</span>
+                </div>
+            </div>
+            <div class="legal-badges">
+                <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener" class="legal-btn"><i class="fa-solid fa-scale-balanced"></i> ANPC – SAL</a>
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" class="legal-btn"><i class="fa-solid fa-globe"></i> Platforma SOL</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 <strong>FRIGO FAB (SC PROD SONRESA SRL)</strong>. Toate drepturile rezervate.</p>
+            <p>Sistem de management al producției certificat <strong>ISO 9001</strong>.</p>
+        </div>
+    </footer>
+
+    <!-- ================= MOBILE STICKY BAR ================= -->
+    <div class="mobile-sticky-bar">
+        <a href="index.html" class="mob-action-item active"><i class="fa-solid fa-house"></i><span>Acasă</span></a>
+        <a href="funerare.html" class="mob-action-item"><i class="fa-solid fa-snowflake"></i><span>Funerare</span></a>
+        <a href="frigorifice.html" class="mob-action-item"><i class="fa-solid fa-industry"></i><span>Frigorifice</span></a>
+        <a href="tel:0741585655" class="mob-action-item call-now"><i class="fa-solid fa-phone-volume"></i><span>Sună Acum</span></a>
+    </div>
+
+    <script>
+        const header = document.getElementById('header');
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 40));
+        menuToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        // 1. Dynamic Spotlight & 3D Tilt Animation
+        document.querySelectorAll('.interactive-card, .tilt-element').forEach(el => {
+            el.addEventListener('mousemove', e => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                el.style.setProperty('--mouse-x', `${x}px`);
+                el.style.setProperty('--mouse-y', `${y}px`);
+
+                if (window.innerWidth > 992 && el.classList.contains('tilt-element')) {
+                    const rotateX = ((y - rect.height / 2) / rect.height) * -6;
+                    const rotateY = ((x - rect.width / 2) / rect.width) * 6;
+                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+                }
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = '';
+            });
+        });
+
+        // 2. Scroll Reveal & Counter Animation
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    entry.target.querySelectorAll('.counter').forEach(counter => {
+                        if (counter.dataset.animated) return;
+                        counter.dataset.animated = 'true';
+                        const target = +counter.dataset.target;
+                        let count = 0;
+                        const step = Math.max(1, Math.ceil(target / 35));
+                        const timer = setInterval(() => {
+                            count += step;
+                            if (count >= target) { counter.textContent = target; clearInterval(timer); }
+                            else { counter.textContent = count; }
+                        }, 30);
+                    });
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // 3. WhatsApp Form
+        document.getElementById('offer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const textWA = `Bună ziua FrigoFab! Mă numesc ${document.getElementById('nume').value} (${document.getElementById('telefon').value}, ${document.getElementById('localitate').value}). Doresc ofertă pentru: ${document.getElementById('gama').value}. Detalii: ${document.getElementById('mesaj').value}`;
+            window.open(`https://wa.me/40741585655?text=${encodeURIComponent(textWA)}`, '_blank');
+        });
+
+        // 4. Interactive Ice Constellation Canvas
+        const canvas = document.getElementById('frost-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [], mouse = { x: null, y: null };
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+        for (let i = 0; i < 45; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 0.8,
+                sy: Math.random() * 0.45 + 0.15,
+                sx: (Math.random() - 0.5) * 0.3,
+                a: Math.random() * 0.45 + 0.2
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, idx) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(56, 189, 248, ${p.a})`;
+                ctx.fill();
+                p.y += p.sy; p.x += p.sx;
+                if (p.y > canvas.height) p.y = -5;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+
+                if (mouse.x) {
+                    const dx = p.x - mouse.x, dy = p.y - mouse.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 130) * 0.25})`;
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
