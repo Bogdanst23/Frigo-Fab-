@@ -140,16 +140,17 @@
         }
 
         .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        
+        /* Logo fără fundal alb - filtrat automat în cod */
         .brand-logo {
-            height: 50px;
+            height: 54px;
             width: auto;
-            border-radius: 10px;
-            background: #ffffff;
-            padding: 4px 10px;
-            box-shadow: 0 4px 20px rgba(0, 149, 217, 0.35);
+            background: transparent;
+            padding: 0;
+            filter: url(#remove-white-bg) drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45));
             transition: var(--transition);
         }
-        .brand-wrap:hover .brand-logo { transform: scale(1.05); }
+        .brand-wrap:hover .brand-logo { transform: scale(1.06); }
         .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-white); line-height: 1.05; display: block; }
         .brand-title span { color: var(--ice-bright); }
         .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
@@ -641,7 +642,7 @@
             .hero-main-frame img { height: 370px; }
         }
         @media (max-width: 768px) {
-            .brand-logo { height: 42px; }
+            .brand-logo { height: 44px; }
             .brand-title { font-size: 1.18rem; }
             .header-cta span { display: none; }
             .header-cta { padding: 10px 14px; }
@@ -669,6 +670,17 @@
 </head>
 <body>
 
+    <!-- Filtru SVG care elimină automat fundalul alb al logo-ului direct în cod -->
+    <svg width="0" height="0" style="position:absolute; pointer-events:none;">
+        <filter id="remove-white-bg" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                -3.5 -3.5 -3.5 10 0" />
+        </filter>
+    </svg>
+
     <canvas id="frost-canvas"></canvas>
 
     <!-- ================= TOP BAR ================= -->
@@ -687,8 +699,8 @@
     <!-- ================= HEADER ================= -->
     <header id="header">
         <a href="index.html" class="brand-wrap">
-            <!-- POZA LOGO: logo.png -->
-            <img src="logo.png" alt="FrigoFab Logo" class="brand-logo">
+            <!-- POZA LOGO DIN FOLDERUL images/ -->
+            <img src="images/logo.png" onerror="this.onerror=null; this.src='images/logo.jpeg';" alt="FrigoFab Logo" class="brand-logo">
             <div>
                 <span class="brand-title">FRIGO<span>FAB</span></span>
                 <span class="brand-subtitle">Turn On Posibilităților</span>
@@ -697,7 +709,7 @@
 
         <nav id="nav-menu">
             <ul>
-                <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Acasă</a></li>
+                <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
                 <li><a href="funerare.html"><i class="fa-solid fa-snowflake"></i> Divizia Funerară &amp; Morgă</a></li>
                 <li><a href="frigorifice.html"><i class="fa-solid fa-industry"></i> Divizia Frigorifice</a></li>
                 <li><a href="#de-ce-noi">De Ce Noi</a></li>
@@ -761,9 +773,9 @@
             </div>
 
             <div class="hero-visual reveal">
-                <!-- POZA 1 PRIMA PAGINA: general1.png -->
-                <div class="hero-main-frame tilt-element" onclick="openLightbox('general1.png')">
-                    <img src="general1.png" alt="Echipamente Frigorifice Profesionale FrigoFab">
+                <!-- POZA 1 PRIMA PAGINA: images/general1.png -->
+                <div class="hero-main-frame tilt-element" onclick="openLightbox('images/general1.png')">
+                    <img src="images/general1.png" alt="Echipamente Frigorifice Profesionale FrigoFab">
                     <div class="hero-floating-badge">
                         <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
                         <div>
@@ -788,9 +800,9 @@
             <div class="divisions-portal-grid">
                 <!-- Portal 1: Funerare -->
                 <div class="portal-card interactive-card tilt-element reveal">
-                    <!-- POZA 2 PRIMA PAGINA: general2.png -->
-                    <div class="portal-img-header" onclick="openLightbox('general2.png')">
-                        <img src="general2.png" alt="Divizia Funerara si Morga FrigoFab">
+                    <!-- POZA 2 PRIMA PAGINA: images/general2.png -->
+                    <div class="portal-img-header" onclick="openLightbox('images/general2.png')">
+                        <img src="images/general2.png" alt="Divizia Funerara si Morga FrigoFab">
                     </div>
                     <div class="portal-body">
                         <div>
@@ -814,9 +826,9 @@
 
                 <!-- Portal 2: Frigorifice -->
                 <div class="portal-card interactive-card tilt-element reveal">
-                    <!-- POZA 3 PRIMA PAGINA: general3.png -->
-                    <div class="portal-img-header" onclick="openLightbox('general3.png')">
-                        <img src="general3.png" alt="Divizia Frigorifice Comerciale si Industriale">
+                    <!-- POZA 3 PRIMA PAGINA: images/general3.png -->
+                    <div class="portal-img-header" onclick="openLightbox('images/general3.png')">
+                        <img src="images/general3.png" alt="Divizia Frigorifice Comerciale si Industriale">
                     </div>
                     <div class="portal-body">
                         <div>
@@ -866,9 +878,9 @@
                     </div>
                 </div>
 
-                <!-- POZA 4 PRIMA PAGINA: general4.png -->
-                <div class="hero-main-frame tilt-element reveal" onclick="openLightbox('general4.png')">
-                    <img src="general4.png" alt="Productie Echipamente FrigoFab" style="background:#fff; object-fit:contain; padding:18px; height: 410px;">
+                <!-- POZA 4 PRIMA PAGINA: images/general4.png -->
+                <div class="hero-main-frame tilt-element reveal" onclick="openLightbox('images/general4.png')">
+                    <img src="images/general4.png" alt="Productie Echipamente FrigoFab" style="object-fit:cover; height: 410px;">
                 </div>
             </div>
 
@@ -977,7 +989,7 @@
                 <div>
                     <span class="section-tag"><i class="fa-solid fa-headset"></i> CONTACT DIRECT</span>
                     <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 900; margin-bottom: 8px;">SOLICITĂ OFERTĂ</h2>
-                    <p style="color: var(--text-silver); font-size: 0.95rem;">Discută direct cu un inginer FrigoFab pentru configurarea echipamentului.</p>
+                    <p style="color: var(--text-silver); font-size: 0.95rem;">Discută direct cu un coleg FrigoFab pentru configurarea echipamentului.</p>
 
                     <div class="contact-info-list">
                         <a href="tel:0741585655" class="contact-item">
@@ -992,7 +1004,7 @@
                             <div class="contact-icon"><i class="fa-brands fa-whatsapp"></i></div>
                             <div>
                                 <span style="font-size: 0.78rem; color: var(--text-muted);">WhatsApp Direct</span>
-                                <h4>0741.585.655 – Oferte Rapide</h4>
+                                <h4>0741.585.655</h4>
                             </div>
                         </a>
 
@@ -1049,10 +1061,10 @@
     <footer>
         <div class="footer-top">
             <div class="brand-wrap">
-                <img src="logo.png" alt="FrigoFab Logo" class="brand-logo" style="height: 44px;">
+                <img src="images/logo.png" onerror="this.onerror=null; this.src='images/logo.jpeg';" alt="FrigoFab Logo" class="brand-logo" style="height: 44px;">
                 <div>
                     <span class="brand-title" style="font-size: 1.2rem;">FRIGO<span>FAB</span></span>
-                    <span class="brand-subtitle">SC PROD SONRESA SRL • Lupești, Jud. Bacău</span>
+                    <span class="brand-subtitle">Turn On Posibilităților</span>
                 </div>
             </div>
             <div class="legal-badges">
@@ -1068,7 +1080,7 @@
 
     <!-- ================= MOBILE STICKY BAR ================= -->
     <div class="mobile-sticky-bar">
-        <a href="index.html" class="mob-action-item active"><i class="fa-solid fa-house"></i><span>Acasă</span></a>
+        <a href="index.html" class="mob-action-item active"><i class="fa-solid fa-house"></i><span>Home</span></a>
         <a href="funerare.html" class="mob-action-item"><i class="fa-solid fa-snowflake"></i><span>Funerare</span></a>
         <a href="frigorifice.html" class="mob-action-item"><i class="fa-solid fa-industry"></i><span>Frigorifice</span></a>
         <a href="tel:0741585655" class="mob-action-item call-now"><i class="fa-solid fa-phone-volume"></i><span>Sună Acum</span></a>
@@ -1086,6 +1098,30 @@
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.add('active');
         }
+
+        // Eliminare automată fundal alb logo prin Canvas (dacă rulează pe server/host) + filtrul SVG deja activ
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.brand-logo').forEach(img => {
+                try {
+                    const c = document.createElement('canvas');
+                    const ctx = c.getContext('2d');
+                    c.width = img.naturalWidth;
+                    c.height = img.naturalHeight;
+                    if (!c.width || !c.height) return;
+                    ctx.drawImage(img, 0, 0);
+                    const imgData = ctx.getImageData(0, 0, c.width, c.height);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        if (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235) {
+                            d[i + 3] = 0;
+                        }
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    img.src = c.toDataURL('image/png');
+                    img.style.filter = 'drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45))';
+                } catch (e) {}
+            });
+        });
 
         // 1. Dynamic Spotlight & 3D Tilt Animation
         document.querySelectorAll('.interactive-card, .tilt-element').forEach(el => {
@@ -1157,7 +1193,7 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((p, idx) => {
+            particles.forEach((p) => {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(56, 189, 248, ${p.a})`;
