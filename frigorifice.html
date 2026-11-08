@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Divizia Frigorifice Comerciale, Industriale & Auto | Camere & Vitrine – FRIGO FAB</title>
-    <meta name="description" content="SC PROD SONRESA SRL (FrigoFab) - Camere frigorifice refrigerare și congelare PUR/PIR, agregate frigorifice, vitrine verticale comerciale, dulapuri inox, frigo auto și retrofit.">
+    <title>Divizia Frigorifice Comerciale, Industriale & Auto | Camere & Agregate – FRIGO FAB</title>
+    <meta name="description" content="SC PROD SONRESA SRL (FrigoFab) - Camere frigorifice refrigerare și congelare PUR/PIR, agregate și suflante frigorifice, instalații frigorifice auto, retrofit și service.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,6 +45,10 @@
                 radial-gradient(circle at 15% 60%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
         }
 
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--ice-primary); border-radius: 4px; }
+
         #frost-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .container { max-width: 1260px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 1; }
 
@@ -61,24 +65,61 @@
             50% { transform: translateY(-9px); }
         }
 
-        /* ================= HEADER ================= */
+        /* ================= TOP BAR ================= */
         .top-bar {
-            position: relative; z-index: 1001; background: rgba(2, 6, 13, 0.94);
-            border-bottom: 1px solid var(--border-ice); padding: 9px 5%;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--text-silver);
+            position: relative;
+            z-index: 1001;
+            background: rgba(2, 6, 13, 0.94);
+            border-bottom: 1px solid var(--border-ice);
+            padding: 9px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-silver);
         }
-        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 22px; }
-        .top-bar-item { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--text-silver); }
-        .top-bar-item i { color: var(--ice-bright); }
 
+        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 24px; }
+        .top-bar-item { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-silver); transition: var(--transition); }
+        .top-bar-item i { color: var(--ice-bright); }
+        .top-bar-item:hover { color: var(--text-white); }
+
+        /* ================= HEADER ================= */
         header {
-            position: sticky; top: 0; width: 100%; z-index: 1000; padding: 14px 5%;
-            background: rgba(3, 8, 18, 0.86); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-ice); display: flex; align-items: center; justify-content: space-between;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 14px 5%;
+            background: rgba(3, 8, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-ice);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
         }
+
+        header.scrolled {
+            padding: 10px 5%;
+            background: rgba(3, 8, 18, 0.96);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+        }
+
         .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-        .brand-logo { height: 50px; width: auto; border-radius: 10px; background: #fff; padding: 4px 10px; box-shadow: 0 4px 20px rgba(0, 149, 217, 0.35); }
-        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; color: var(--text-white); line-height: 1.05; display: block; }
+        
+        /* Logo fără fundal alb - filtrat automat în cod */
+        .brand-logo {
+            height: 54px;
+            width: auto;
+            background: transparent;
+            padding: 0;
+            filter: url(#remove-white-bg) drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45));
+            transition: var(--transition);
+        }
+        .brand-wrap:hover .brand-logo { transform: scale(1.06); }
+        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-white); line-height: 1.05; display: block; }
         .brand-title span { color: var(--ice-bright); }
         .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
 
@@ -93,8 +134,10 @@
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .header-cta {
             display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
-            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice);
+            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice); border: 1px solid rgba(255, 255, 255, 0.22); transition: var(--transition);
         }
+        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.6); }
+
         .menu-toggle {
             display: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 149, 217, 0.15);
             border: 1px solid var(--border-ice); color: #fff; font-size: 1.3rem; cursor: pointer; align-items: center; justify-content: center;
@@ -137,7 +180,7 @@
         .hero-img-box img { width: 100%; height: 440px; object-fit: cover; display: block; transition: transform 0.7s ease; }
         .hero-img-box:hover img { transform: scale(1.05); }
 
-        /* ================= PHOTO SHOWCASE ROW (frigorific2, frigorific3, frigorific4) ================= */
+        /* ================= PHOTO SHOWCASE ROW (images/frigorific2, frigorific3, frigorific4) ================= */
         .photo-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
         .photo-strip-card {
             background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 20px;
@@ -149,23 +192,23 @@
         .photo-strip-label { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem; color: var(--text-white); }
         .photo-strip-label i { color: var(--ice-bright); }
 
-        /* ================= INTERACTIVE FILTER + 6 SOLUTIONS ================= */
-        section { padding: 65px 0; }
+        /* ================= INTERACTIVE FILTER + 4 SOLUTIONS (2x2 GRID) ================= */
+        section { padding: 65px 0 85px; }
         .section-header { text-align: center; max-width: 760px; margin: 0 auto 35px; }
         .section-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.75rem, 3vw, 2.45rem); font-weight: 900; text-transform: uppercase; margin-bottom: 10px; color: var(--text-white); }
 
         .filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 40px; }
         .filter-btn {
             background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice); color: var(--text-silver);
-            padding: 10px 20px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700;
+            padding: 10px 22px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700;
             font-size: 0.82rem; cursor: pointer; transition: var(--transition);
         }
         .filter-btn.active, .filter-btn:hover { background: var(--ice-primary); color: var(--text-white); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
 
-        .frigo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+        .frigo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
         .frigo-card {
             background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 22px;
-            padding: 30px 24px; display: flex; flex-direction: column; justify-content: space-between;
+            padding: 32px 28px; display: flex; flex-direction: column; justify-content: space-between;
             box-shadow: var(--shadow-deep); transition: var(--transition); backdrop-filter: blur(14px);
         }
         .frigo-card:hover { transform: translateY(-7px); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
@@ -181,46 +224,22 @@
             background: rgba(0, 149, 217, 0.16); border: 1px solid var(--border-ice); padding: 5px 12px; border-radius: 50px;
         }
 
-        .frigo-card h3 { font-family: 'Montserrat', sans-serif; font-size: 1.18rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; color: var(--text-white); position: relative; z-index: 2; }
-        .frigo-card p { color: var(--text-silver); font-size: 0.91rem; margin-bottom: 16px; position: relative; z-index: 2; }
+        .frigo-card h3 { font-family: 'Montserrat', sans-serif; font-size: 1.22rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; color: var(--text-white); position: relative; z-index: 2; }
+        .frigo-card p { color: var(--text-silver); font-size: 0.93rem; margin-bottom: 16px; position: relative; z-index: 2; }
 
-        .key-points { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; position: relative; z-index: 2; }
-        .key-points li { font-size: 0.84rem; color: var(--text-silver); display: flex; align-items: center; gap: 8px; }
+        .key-points { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; position: relative; z-index: 2; }
+        .key-points li { font-size: 0.86rem; color: var(--text-silver); display: flex; align-items: center; gap: 8px; }
         .key-points li i { color: var(--ice-bright); font-size: 0.78rem; }
 
         .card-cta {
             position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            width: 100%; padding: 12px 16px; border-radius: 12px; background: rgba(0, 149, 217, 0.14);
-            border: 1px solid var(--border-ice); color: var(--text-white); font-weight: 700; font-size: 0.88rem;
+            width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(0, 149, 217, 0.14);
+            border: 1px solid var(--border-ice); color: var(--text-white); font-weight: 700; font-size: 0.9rem;
             text-decoration: none; transition: var(--transition);
         }
         .card-cta i { color: var(--ice-bright); }
         .card-cta:hover { background: var(--ice-primary); border-color: var(--ice-bright); }
         .card-cta:hover i { color: var(--text-white); }
-
-        /* ================= INTERACTIVE CONFIGURATOR ================= */
-        .config-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-bright);
-            border-radius: 26px;
-            padding: 40px;
-            box-shadow: var(--shadow-deep);
-            max-width: 940px;
-            margin: 0 auto;
-        }
-        .step-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ice-bright); margin-bottom: 10px; display: block; }
-        .chip-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
-        .choice-chip {
-            background: rgba(3, 8, 18, 0.85); border: 1px solid var(--border-ice); color: var(--text-silver);
-            padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: var(--transition);
-        }
-        .choice-chip.active, .choice-chip:hover { background: var(--ice-primary); color: var(--text-white); border-color: var(--ice-bright); }
-
-        .config-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-        .form-control {
-            width: 100%; padding: 14px 16px; border-radius: 12px; background: rgba(3, 8, 18, 0.85);
-            border: 1px solid var(--border-ice); color: var(--text-white); font-family: inherit; font-size: 0.94rem;
-        }
 
         /* ================= LIGHTBOX & MOBILE BAR ================= */
         .lightbox {
@@ -252,14 +271,13 @@
         .reveal { opacity: 0; transform: translateY(26px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 1024px) { .frigo-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 900px) {
             .top-bar { display: none; }
-            .frigo-hero, .frigo-grid, .photo-strip, .config-inputs { grid-template-columns: 1fr; }
+            .frigo-hero, .frigo-grid, .photo-strip { grid-template-columns: 1fr; }
             .hero-img-box img { height: 340px; }
         }
         @media (max-width: 768px) {
-            .brand-logo { height: 42px; }
+            .brand-logo { height: 44px; }
             .brand-title { font-size: 1.18rem; }
             .header-cta span { display: none; }
             .header-cta { padding: 10px 14px; }
@@ -270,44 +288,57 @@
             }
             nav.open { display: block; }
             nav ul { flex-direction: column; align-items: stretch; gap: 8px; }
+            nav ul li a { padding: 13px 16px; font-size: 0.96rem; }
             .regime-pills { grid-template-columns: 1fr; }
-            .config-panel { padding: 24px 18px; }
             .mobile-sticky-bar { display: grid; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Filtru SVG care elimină automat fundalul alb al logo-ului direct în cod -->
+    <svg width="0" height="0" style="position:absolute; pointer-events:none;">
+        <filter id="remove-white-bg" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                -3.5 -3.5 -3.5 10 0" />
+        </filter>
+    </svg>
+
     <canvas id="frost-canvas"></canvas>
 
     <!-- ================= TOP BAR ================= -->
     <div class="top-bar">
         <div class="top-bar-left">
-            <span class="top-bar-item"><i class="fa-solid fa-industry"></i> DIVIZIA FRIGORIFICE COMERCIALE, INDUSTRIALE &amp; AUTO</span>
-            <span class="top-bar-item"><i class="fa-solid fa-certificate"></i> Proiectare, Execuție &amp; Service ISO 9001</span>
+            <span class="top-bar-item"><i class="fa-solid fa-building-shield"></i> SC PROD SONRESA SRL • Sistem ISO 9001</span>
+            <span class="top-bar-item"><i class="fa-solid fa-location-dot"></i> Lupești, Jud. Bacău, România</span>
         </div>
         <div class="top-bar-right">
+            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
+            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
             <a href="tel:0741585655" class="top-bar-item" style="color: var(--text-white); font-weight: 700;"><i class="fa-solid fa-phone"></i> 0741.585.655</a>
         </div>
     </div>
 
     <!-- ================= HEADER ================= -->
-    <header>
+    <header id="header">
         <a href="index.html" class="brand-wrap">
-            <!-- POZA LOGO: logo.png -->
-            <img src="logo.png" alt="FrigoFab Logo" class="brand-logo">
+            <!-- POZA LOGO DIN FOLDERUL images/ -->
+            <img src="images/logo.png" onerror="this.onerror=null; this.src='images/logo.jpeg';" alt="FrigoFab Logo" class="brand-logo">
             <div>
                 <span class="brand-title">FRIGO<span>FAB</span></span>
-                <span class="brand-subtitle">Divizia Frigorifice</span>
+                <span class="brand-subtitle">Turn On Posibilităților</span>
             </div>
         </a>
 
         <nav id="nav-menu">
             <ul>
-                <li><a href="index.html"><i class="fa-solid fa-house"></i> Acasă</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
                 <li><a href="funerare.html"><i class="fa-solid fa-snowflake"></i> Divizia Funerară &amp; Morgă</a></li>
                 <li><a href="frigorifice.html" class="active"><i class="fa-solid fa-industry"></i> Divizia Frigorifice</a></li>
-                <li><a href="#configurator">Configurator Rapid</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
             </ul>
         </nav>
 
@@ -326,10 +357,10 @@
         <!-- ================= HERO FRIGORIFICE ================= -->
         <div class="frigo-hero">
             <div class="reveal">
-                <span class="ice-tag"><i class="fa-solid fa-temperature-arrow-down"></i> COMERCIAL • INDUSTRIAL • HORECA • AUTO</span>
+                <span class="ice-tag"><i class="fa-solid fa-temperature-arrow-down"></i> COMERCIAL • INDUSTRIAL • AUTO</span>
                 <h1>SISTEME FRIGORIFICE <span>LA CHEIE</span></h1>
                 <p>
-                    Dimensionăm, construim și automatizăm camere frigorifice modulare, centrale și agregate de frig, vitrine verticale comerciale, dulapuri frigorifice din inox și instalații frigorifice auto.
+                    Dimensionăm, construim și automatizăm camere frigorifice modulare de refrigerare și congelare, centrale și agregate de frig, instalații frigorifice auto și sisteme de control digital.
                 </p>
 
                 <div class="regime-pills">
@@ -347,42 +378,42 @@
                     </div>
                 </div>
 
-                <a href="#configurator" class="btn-primary">
-                    <i class="fa-solid fa-sliders"></i> Configurează Proiectul Tău
+                <a href="index.html#contact" class="btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i> Contactează-ne pentru Ofertă
                 </a>
             </div>
 
             <div class="reveal">
-                <!-- POZA 1 FRIGORIFICE: frigorific1.png -->
-                <div class="hero-img-box tilt-element" onclick="openLightbox('frigorific1.png')">
-                    <img src="frigorific1.png" alt="Instalatii Frigorifice Comerciale si Industriale FrigoFab">
+                <!-- POZA 1 FRIGORIFICE: images/frigorific1.png -->
+                <div class="hero-img-box tilt-element" onclick="openLightbox('images/frigorific1.png')">
+                    <img src="images/frigorific1.png" alt="Instalatii Frigorifice Comerciale si Industriale FrigoFab">
                 </div>
             </div>
         </div>
 
-        <!-- ================= CELE 3 POZE REPREZENTATIVE (frigorific2, frigorific3, frigorific4) ================= -->
+        <!-- ================= CELE 3 POZE REPREZENTATIVE (images/frigorific2, frigorific3, frigorific4) ================= -->
         <div class="photo-strip reveal">
-            <!-- POZA 2 FRIGORIFICE: frigorific2.png -->
-            <div class="photo-strip-card tilt-element" onclick="openLightbox('frigorific2.png')">
-                <img src="frigorific2.png" alt="Camere Frigorifice Modulare">
+            <!-- POZA 2 FRIGORIFICE: images/frigorific2.png -->
+            <div class="photo-strip-card tilt-element" onclick="openLightbox('images/frigorific2.png')">
+                <img src="images/frigorific2.png" alt="Camere Frigorifice Modulare">
                 <div class="photo-strip-label">
                     <span>Camere Frigorifice Modulare</span>
                     <i class="fa-solid fa-expand"></i>
                 </div>
             </div>
 
-            <!-- POZA 3 FRIGORIFICE: frigorific3.png -->
-            <div class="photo-strip-card tilt-element" onclick="openLightbox('frigorific3.png')">
-                <img src="frigorific3.png" alt="Vitrine Frigorifice si Dulapuri Inox">
+            <!-- POZA 3 FRIGORIFICE: images/frigorific3.png -->
+            <div class="photo-strip-card tilt-element" onclick="openLightbox('images/frigorific3.png')">
+                <img src="images/frigorific3.png" alt="Frigorifice Auto si Automatizari">
                 <div class="photo-strip-label">
-                    <span>Vitrine Comerciale &amp; Inox</span>
+                    <span>Frigorifice Auto &amp; Automatizări</span>
                     <i class="fa-solid fa-expand"></i>
                 </div>
             </div>
 
-            <!-- POZA 4 FRIGORIFICE: frigorific4.png -->
-            <div class="photo-strip-card tilt-element" onclick="openLightbox('frigorific4.png')">
-                <img src="frigorific4.png" alt="Agregate si Centrale Frigorifice">
+            <!-- POZA 4 FRIGORIFICE: images/frigorific4.png -->
+            <div class="photo-strip-card tilt-element" onclick="openLightbox('images/frigorific4.png')">
+                <img src="images/frigorific4.png" alt="Agregate si Centrale Frigorifice">
                 <div class="photo-strip-label">
                     <span>Agregate &amp; Instalații Frigorifice</span>
                     <i class="fa-solid fa-expand"></i>
@@ -391,7 +422,7 @@
         </div>
 
         <!-- ================= SOLUTII FRIGORIFICE CU FILTRU RAPID ================= -->
-        <section>
+        <section id="solutii">
             <div class="section-header reveal">
                 <span class="ice-tag"><i class="fa-solid fa-cubes"></i> INGINERIE FRIGORIFICĂ</span>
                 <h2 class="section-title">SOLUȚII FRIGORIFICE PROFESIONALE</h2>
@@ -400,7 +431,6 @@
             <div class="filter-bar reveal">
                 <button class="filter-btn active" onclick="filterFrigo('all', this)">Toate Sistemele</button>
                 <button class="filter-btn" onclick="filterFrigo('camere', this)">Camere &amp; Agregate</button>
-                <button class="filter-btn" onclick="filterFrigo('comercial', this)">Vitrine &amp; Inox HoReCa</button>
                 <button class="filter-btn" onclick="filterFrigo('service', this)">Frigo Auto, Retrofit &amp; Service</button>
             </div>
 
@@ -445,47 +475,7 @@
                     </a>
                 </div>
 
-                <!-- 3. Vitrine Frigorifice -->
-                <div class="frigo-card interactive-card tilt-element reveal" data-group="comercial">
-                    <div>
-                        <div class="card-top">
-                            <div class="card-icon"><i class="fa-solid fa-store"></i></div>
-                            <span class="card-badge">Plug-in &amp; Remote</span>
-                        </div>
-                        <h3>Vitrine Verticale &amp; Gama Comercial</h3>
-                        <p>Vitrine frigorifice verticale cu uși din sticlă Low-E sau perdea de aer pentru supermarketuri, măcelării și magazine.</p>
-                        <ul class="key-points">
-                            <li><i class="fa-solid fa-check"></i> Agregat intern sau extern (fără zgomot în sală)</li>
-                            <li><i class="fa-solid fa-check"></i> Iluminare LED și rafturi reglabile</li>
-                            <li><i class="fa-solid fa-check"></i> Control digital anti-condens</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Vitrine%20Frigorifice%20Comerciale." target="_blank" class="card-cta">
-                        <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Vitrine
-                    </a>
-                </div>
-
-                <!-- 4. Dulapuri & Mese Frigorifice din Inox -->
-                <div class="frigo-card interactive-card tilt-element reveal" data-group="comercial">
-                    <div>
-                        <div class="card-top">
-                            <div class="card-icon"><i class="fa-solid fa-snowflake"></i></div>
-                            <span class="card-badge">Inox Alimentar AISI 304</span>
-                        </div>
-                        <h3>Dulapuri &amp; Mese Frigorifice Inox</h3>
-                        <p>Echipamente frigorifice din oțel inoxidabil și abătătoare de temperatură (blast chillere) pentru bucătării profesionale și laboratoare.</p>
-                        <ul class="key-points">
-                            <li><i class="fa-solid fa-check"></i> Răcire ventilată uniformă și degivrare automată</li>
-                            <li><i class="fa-solid fa-check"></i> Execuție robustă din inox pe dimensiuni speciale</li>
-                            <li><i class="fa-solid fa-check"></i> Izolație poliuretanică de înaltă densitate</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Dulapuri%20/%20Mese%20Frigorifice%20Inox." target="_blank" class="card-cta">
-                        <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Echipamente Inox
-                    </a>
-                </div>
-
-                <!-- 5. Frigorifice Auto -->
+                <!-- 3. Frigorifice Auto -->
                 <div class="frigo-card interactive-card tilt-element reveal" data-group="service">
                     <div>
                         <div class="card-top">
@@ -505,7 +495,7 @@
                     </a>
                 </div>
 
-                <!-- 6. Retrofit, Automatizari & Service -->
+                <!-- 4. Retrofit, Automatizari & Service -->
                 <div class="frigo-card interactive-card tilt-element reveal" data-group="service">
                     <div>
                         <div class="card-top">
@@ -526,42 +516,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- ================= CONFIGURATOR INTERACTIV ================= -->
-        <section id="configurator">
-            <div class="config-panel interactive-card reveal">
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <span class="ice-tag"><i class="fa-solid fa-bolt"></i> CONFIGURATOR INTERACTIV</span>
-                    <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 900;">CONFIGUREAZĂ CEREREA ÎN 3 PAȘI</h2>
-                </div>
-
-                <span class="step-label">1. Alege tipul sistemului:</span>
-                <div class="chip-group" id="chip-sistem">
-                    <button type="button" class="choice-chip active" onclick="pickChip('chip-sistem', this)">Cameră Frigorifică</button>
-                    <button type="button" class="choice-chip" onclick="pickChip('chip-sistem', this)">Vitrine Comerciale</button>
-                    <button type="button" class="choice-chip" onclick="pickChip('chip-sistem', this)">Dulapuri / Mese Inox</button>
-                    <button type="button" class="choice-chip" onclick="pickChip('chip-sistem', this)">Frigorifice Auto</button>
-                    <button type="button" class="choice-chip" onclick="pickChip('chip-sistem', this)">Retrofit / Service</button>
-                </div>
-
-                <span class="step-label">2. Alege regimul termic:</span>
-                <div class="chip-group" id="chip-regim">
-                    <button type="button" class="choice-chip active" onclick="pickChip('chip-regim', this)">Refrigerare (-2°C ... +8°C)</button>
-                    <button type="button" class="choice-chip" onclick="pickChip('chip-regim', this)">Congelare (-18°C ... -25°C)</button>
-                    <button type="button" class="choice-chip" onclick="pickChip('chip-regim', this)">Congelare Rapidă (-35°C)</button>
-                </div>
-
-                <span class="step-label">3. Dimensiuni &amp; Localitate:</span>
-                <div class="config-inputs">
-                    <input type="text" id="conf-dim" class="form-control" placeholder="Dimensiuni aprox. (ex: 4 x 3 x 2.5 m)">
-                    <input type="text" id="conf-loc" class="form-control" placeholder="Localitate / Județ montaj">
-                </div>
-
-                <button type="button" class="btn-primary" style="width: 100%; font-size: 1rem;" onclick="sendConfigWA()">
-                    <i class="fa-brands fa-whatsapp"></i> Trimite Configurația pe WhatsApp (0741 585 655)
-                </button>
-            </div>
-        </section>
     </div>
 
     <!-- ================= LIGHTBOX ================= -->
@@ -579,15 +533,18 @@
 
     <!-- ================= MOBILE STICKY BAR ================= -->
     <div class="mobile-sticky-bar">
-        <a href="index.html" class="mob-action-item"><i class="fa-solid fa-house"></i><span>Acasă</span></a>
+        <a href="index.html" class="mob-action-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
         <a href="funerare.html" class="mob-action-item"><i class="fa-solid fa-snowflake"></i><span>Funerare</span></a>
         <a href="frigorifice.html" class="mob-action-item active"><i class="fa-solid fa-industry"></i><span>Frigorifice</span></a>
         <a href="tel:0741585655" class="mob-action-item call-now"><i class="fa-solid fa-phone-volume"></i><span>Sună Acum</span></a>
     </div>
 
     <script>
+        const header = document.getElementById('header');
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
+
+        window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 40));
         menuToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
 
         function openLightbox(src) {
@@ -595,26 +552,36 @@
             document.getElementById('lightbox').classList.add('active');
         }
 
+        // Eliminare automată fundal alb logo prin Canvas + filtrul SVG deja activ
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.brand-logo').forEach(img => {
+                try {
+                    const c = document.createElement('canvas');
+                    const ctx = c.getContext('2d');
+                    c.width = img.naturalWidth;
+                    c.height = img.naturalHeight;
+                    if (!c.width || !c.height) return;
+                    ctx.drawImage(img, 0, 0);
+                    const imgData = ctx.getImageData(0, 0, c.width, c.height);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        if (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235) {
+                            d[i + 3] = 0;
+                        }
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    img.src = c.toDataURL('image/png');
+                    img.style.filter = 'drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45))';
+                } catch (e) {}
+            });
+        });
+
         function filterFrigo(group, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             document.querySelectorAll('.frigo-card').forEach(card => {
                 card.style.display = (group === 'all' || card.dataset.group === group) ? 'flex' : 'none';
             });
-        }
-
-        function pickChip(groupId, btn) {
-            document.querySelectorAll(`#${groupId} .choice-chip`).forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function sendConfigWA() {
-            const sistem = document.querySelector('#chip-sistem .choice-chip.active').textContent;
-            const regim = document.querySelector('#chip-regim .choice-chip.active').textContent;
-            const dim = document.getElementById('conf-dim').value || 'nespecificate';
-            const loc = document.getElementById('conf-loc').value || 'nespecificată';
-            const msg = `Bună ziua FrigoFab! Doresc ofertă pentru: ${sistem} | Regim: ${regim} | Dimensiuni: ${dim} | Localitate: ${loc}.`;
-            window.open(`https://wa.me/40741585655?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         document.querySelectorAll('.interactive-card, .tilt-element').forEach(el => {
