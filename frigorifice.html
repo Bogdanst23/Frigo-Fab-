@@ -18,21 +18,22 @@
         :root {
             --bg-deep: #030812;
             --bg-navy: #071324;
-            --bg-card: rgba(10, 25, 47, 0.75);
+            --bg-card: rgba(10, 25, 47, 0.74);
             --ice-primary: #0095d9;
             --ice-bright: #38bdf8;
+            --ice-cyan: #7dd3fc;
             --text-white: #ffffff;
             --text-silver: #cbd5e1;
             --text-muted: #94a3b8;
             --border-ice: rgba(56, 189, 248, 0.22);
-            --border-bright: rgba(56, 189, 248, 0.55);
-            --shadow-deep: 0 25px 55px -12px rgba(0, 0, 0, 0.8);
-            --shadow-ice: 0 12px 35px -5px rgba(0, 149, 217, 0.45);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --border-bright: rgba(56, 189, 248, 0.58);
+            --shadow-deep: 0 25px 55px -12px rgba(0, 0, 0, 0.85);
+            --shadow-ice: 0 14px 38px -5px rgba(0, 149, 217, 0.48);
+            --transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -40,30 +41,200 @@
             color: var(--text-white);
             line-height: 1.65;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Engineering Grid + Animated Cryo Aurora */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
             background-image: 
-                radial-gradient(circle at 80% 15%, rgba(0, 149, 217, 0.16) 0%, transparent 40%),
-                radial-gradient(circle at 15% 60%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+                linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        .aurora-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(95px);
+            opacity: 0.42;
+            animation: auroraDrift 16s ease-in-out infinite alternate;
+        }
+        .aurora-orb.one {
+            width: 520px; height: 520px;
+            top: -10%; right: -8%;
+            background: radial-gradient(circle, rgba(0, 149, 217, 0.45), transparent 70%);
+        }
+        .aurora-orb.two {
+            width: 480px; height: 480px;
+            bottom: 8%; left: -10%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 70%);
+            animation-delay: -6s;
+        }
+        .aurora-orb.three {
+            width: 360px; height: 360px;
+            top: 48%; left: 42%;
+            background: radial-gradient(circle, rgba(2, 132, 199, 0.25), transparent 70%);
+            animation-delay: -11s;
+        }
+
+        @keyframes auroraDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(35px, -25px) scale(1.08); }
+            100% { transform: translate(-25px, 30px) scale(0.95); }
         }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: var(--ice-primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--ice-primary), var(--ice-bright)); border-radius: 4px; }
 
-        #frost-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .container { max-width: 1260px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 1; }
-
-        .interactive-card { position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform; }
-        .interactive-card::before {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.14), transparent 40%);
-            opacity: 0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1;
+        .scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px; width: 0%;
+            background: linear-gradient(90deg, var(--ice-primary), var(--ice-bright), var(--ice-cyan));
+            z-index: 2500;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.85);
+            transition: width 0.08s linear;
         }
+
+        #frost-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 0 5%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= INTERACTIVE CARDS & ANIMATIONS ================= */
+        .interactive-card {
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .interactive-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(520px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.16), transparent 42%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
         .interactive-card:hover::before { opacity: 1; }
 
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-9px); }
+            50% { transform: translateY(-8px); }
         }
+
+        @keyframes sheenSweep {
+            0% { left: -120%; }
+            28%, 100% { left: 145%; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            50% { box-shadow: 0 0 26px 3px rgba(56, 189, 248, 0.25); }
+        }
+
+        @keyframes cryoScan {
+            0% { top: -15%; opacity: 0; }
+            20% { opacity: 0.75; }
+            80% { opacity: 0.75; }
+            100% { top: 115%; opacity: 0; }
+        }
+
+        /* ================= PERFECT FIT STUDIO IMAGE SHOWCASE ================= */
+        .studio-photo-box {
+            position: relative;
+            width: 100%;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.16) 0%, rgba(7, 19, 36, 0.92) 72%),
+                linear-gradient(180deg, #061224 0%, #030914 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .studio-photo-box::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.8), transparent);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+            top: -15%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .studio-photo-box:hover::after {
+            animation: cryoScan 1.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .studio-photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            padding: 14px;
+            filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.75));
+            transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .studio-photo-box:hover img {
+            transform: scale(1.045);
+            filter: drop-shadow(0 18px 30px rgba(0, 149, 217, 0.35));
+        }
+
+        .zoom-pill {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 4;
+            background: rgba(3, 8, 18, 0.82);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-ice);
+            color: var(--text-silver);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .zoom-pill i { color: var(--ice-bright); }
+        .studio-photo-box:hover .zoom-pill {
+            background: var(--ice-primary);
+            border-color: var(--ice-bright);
+            color: var(--text-white);
+            transform: translateY(-2px);
+        }
+        .studio-photo-box:hover .zoom-pill i { color: var(--text-white); }
 
         /* ================= TOP BAR ================= */
         .top-bar {
@@ -84,113 +255,207 @@
         .top-bar-item i { color: var(--ice-bright); }
         .top-bar-item:hover { color: var(--text-white); }
 
-        /* ================= HEADER ================= */
+        /* ================= HEADER & LOGOS ================= */
         header {
             position: sticky;
             top: 0;
             width: 100%;
             z-index: 1000;
-            padding: 14px 5%;
-            background: rgba(3, 8, 18, 0.85);
+            padding: 12px 5%;
+            background: rgba(3, 8, 18, 0.86);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-ice);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
             transition: var(--transition);
         }
 
         header.scrolled {
-            padding: 10px 5%;
-            background: rgba(3, 8, 18, 0.96);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+            padding: 9px 5%;
+            background: rgba(3, 8, 18, 0.97);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75);
         }
 
-        .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            min-width: 0;
+            flex-shrink: 1;
+        }
         
-        /* Logo fără fundal alb - filtrat automat în cod */
-        .brand-logo {
-            height: 54px;
+        .brand-logo-emblem {
+            height: 50px;
             width: auto;
+            object-fit: contain;
             background: transparent;
-            padding: 0;
-            filter: url(#remove-white-bg) drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45));
+            filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.4));
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .brand-logo-slogan {
+            height: 34px;
+            width: auto;
+            max-width: 240px;
+            object-fit: contain;
+            background: transparent;
+            filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.35));
             transition: var(--transition);
         }
-        .brand-wrap:hover .brand-logo { transform: scale(1.06); }
-        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-white); line-height: 1.05; display: block; }
-        .brand-title span { color: var(--ice-bright); }
-        .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
 
-        nav ul { display: flex; list-style: none; align-items: center; gap: 8px; }
+        .brand-wrap:hover .brand-logo-emblem,
+        .brand-wrap:hover .brand-logo-slogan {
+            transform: scale(1.04);
+            filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.65));
+        }
+
+        nav ul { display: flex; list-style: none; align-items: center; gap: 6px; }
         nav ul li a {
-            color: var(--text-silver); text-decoration: none; font-weight: 600; font-size: 0.91rem;
-            padding: 10px 16px; border-radius: 10px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent;
+            color: var(--text-silver); text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            padding: 10px 14px; border-radius: 10px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent;
+            white-space: nowrap;
         }
-        nav ul li a i { color: var(--ice-bright); }
-        nav ul li a:hover, nav ul li a.active { color: var(--text-white); background: rgba(0, 149, 217, 0.2); border-color: var(--border-ice); }
+        nav ul li a i { color: var(--ice-bright); transition: transform 0.3s ease; }
+        nav ul li a:hover i { transform: scale(1.15); }
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--text-white);
+            background: rgba(0, 149, 217, 0.18);
+            border-color: var(--border-ice);
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.14);
+        }
 
-        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .header-cta {
-            display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
-            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice); border: 1px solid rgba(255, 255, 255, 0.22); transition: var(--transition);
+            position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            color: var(--text-white); text-decoration: none; padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow-ice); border: 1px solid rgba(255, 255, 255, 0.22); transition: var(--transition);
+            animation: pulseGlow 3.2s infinite;
         }
-        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.6); }
+        .header-cta::after {
+            content: ''; position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+            transform: skewX(-25deg); animation: sheenSweep 4.5s infinite;
+        }
+        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.65); }
 
         .menu-toggle {
             display: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 149, 217, 0.15);
-            border: 1px solid var(--border-ice); color: #fff; font-size: 1.3rem; cursor: pointer; align-items: center; justify-content: center;
+            border: 1px solid var(--border-ice); color: #fff; font-size: 1.25rem; cursor: pointer; align-items: center; justify-content: center;
         }
+
+        .nav-backdrop {
+            display: none; position: fixed; inset: 0;
+            background: rgba(2, 6, 13, 0.72); backdrop-filter: blur(4px); z-index: 998;
+        }
+        .nav-backdrop.active { display: block; }
 
         /* ================= HERO FRIGORIFICE ================= */
         .frigo-hero {
-            padding: 60px 0 70px; display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 48px; align-items: center;
+            padding: 55px 0 65px; display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 44px; align-items: center;
         }
         .ice-tag {
-            display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.78rem;
-            letter-spacing: 2px; text-transform: uppercase; color: var(--ice-bright);
+            display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.76rem;
+            letter-spacing: 1.8px; text-transform: uppercase; color: var(--ice-bright);
             background: rgba(0, 149, 217, 0.14); border: 1px solid var(--border-ice); padding: 6px 16px; border-radius: 50px; margin-bottom: 16px;
         }
         .frigo-hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 3.8vw, 3.25rem); font-weight: 900; line-height: 1.12; text-transform: uppercase; margin-bottom: 16px; color: var(--text-white); }
-        .frigo-hero h1 span { color: var(--ice-bright); }
+        .frigo-hero h1 span {
+            background: linear-gradient(90deg, var(--ice-bright), var(--ice-cyan), var(--ice-primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
         .frigo-hero p { color: var(--text-silver); font-size: 1.02rem; margin-bottom: 26px; }
 
         .regime-pills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
         .regime-pill {
-            background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice);
+            background: rgba(10, 25, 47, 0.65); border: 1px solid var(--border-ice);
             border-radius: 14px; padding: 14px; text-align: center; transition: var(--transition);
         }
-        .regime-pill:hover { border-color: var(--ice-bright); transform: translateY(-3px); }
-        .regime-pill strong { display: block; font-family: 'Montserrat', sans-serif; font-size: 1.05rem; color: var(--text-white); }
+        .regime-pill:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.14); transform: translateY(-4px); box-shadow: var(--shadow-ice); }
+        .regime-pill strong { display: block; font-family: 'Montserrat', sans-serif; font-size: 1.02rem; color: var(--text-white); }
         .regime-pill span { font-size: 0.77rem; color: var(--text-silver); }
 
         .btn-primary {
+            position: relative; overflow: hidden;
             display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white);
+            background: linear-gradient(135deg, var(--ice-primary), #0369a1); color: var(--text-white);
             padding: 15px 28px; border-radius: 14px; font-weight: 700; text-decoration: none;
             box-shadow: var(--shadow-ice); transition: var(--transition); border: 1px solid var(--border-bright); cursor: pointer;
         }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 35px rgba(0, 149, 217, 0.6); }
+        .btn-primary::after {
+            content: ''; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-25deg); animation: sheenSweep 5s infinite;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(0, 149, 217, 0.65); }
 
+        .hero-visual { animation: floatSlow 6s ease-in-out infinite; }
         .hero-img-box {
             position: relative; border-radius: 24px; overflow: hidden; border: 1px solid var(--border-bright);
-            box-shadow: var(--shadow-deep); cursor: zoom-in; animation: floatSlow 6s ease-in-out infinite;
+            box-shadow: var(--shadow-deep), 0 0 42px rgba(0, 149, 217, 0.24);
+            background: var(--bg-navy);
+            display: flex;
+            flex-direction: column;
         }
-        .hero-img-box img { width: 100%; height: 440px; object-fit: cover; display: block; transition: transform 0.7s ease; }
-        .hero-img-box:hover img { transform: scale(1.05); }
+        .hero-img-box .studio-photo-box {
+            aspect-ratio: 4 / 3;
+            max-height: 430px;
+        }
+        .hero-caption-bar {
+            background: rgba(3, 8, 18, 0.95);
+            border-top: 1px solid var(--border-ice);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-caption-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: rgba(0, 149, 217, 0.2);
+            color: var(--ice-bright);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+        .hero-caption-bar h4 { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: var(--text-white); line-height: 1.25; }
+        .hero-caption-bar span { font-size: 0.76rem; color: var(--text-silver); display: block; margin-top: 2px; }
 
-        /* ================= PHOTO SHOWCASE ROW (images/frigorific2, frigorific3, frigorific4) ================= */
+        /* ================= PHOTO SHOWCASE ROW (PERFECT FIT) ================= */
         .photo-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
         .photo-strip-card {
-            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 20px;
-            overflow: hidden; cursor: zoom-in; transition: var(--transition);
+            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 22px;
+            overflow: hidden; transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-deep);
+            backdrop-filter: blur(14px);
         }
         .photo-strip-card:hover { transform: translateY(-6px); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
-        .photo-strip-card img { width: 100%; height: 250px; object-fit: cover; display: block; transition: transform 0.6s ease; }
-        .photo-strip-card:hover img { transform: scale(1.06); }
-        .photo-strip-label { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem; color: var(--text-white); }
-        .photo-strip-label i { color: var(--ice-bright); }
+        .photo-strip-card .studio-photo-box {
+            aspect-ratio: 16 / 11;
+            border-bottom: 1px solid var(--border-ice);
+        }
+        .photo-strip-label {
+            padding: 15px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.88rem;
+            color: var(--text-white);
+            position: relative;
+            z-index: 2;
+        }
+        .photo-strip-label i { color: var(--ice-bright); transition: transform 0.3s ease; }
+        .photo-strip-card:hover .photo-strip-label i { transform: translateX(4px); }
 
         /* ================= INTERACTIVE FILTER + 4 SOLUTIONS (2x2 GRID) ================= */
         section { padding: 65px 0 85px; }
@@ -200,14 +465,20 @@
         .filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 40px; }
         .filter-btn {
             background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice); color: var(--text-silver);
-            padding: 10px 22px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700;
+            padding: 11px 22px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700;
             font-size: 0.82rem; cursor: pointer; transition: var(--transition);
         }
-        .filter-btn.active, .filter-btn:hover { background: var(--ice-primary); color: var(--text-white); border-color: var(--ice-bright); box-shadow: var(--shadow-ice); }
+        .filter-btn.active, .filter-btn:hover {
+            background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            color: var(--text-white);
+            border-color: var(--ice-bright);
+            box-shadow: var(--shadow-ice);
+            transform: translateY(-2px);
+        }
 
         .frigo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
         .frigo-card {
-            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 22px;
+            background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 24px;
             padding: 32px 28px; display: flex; flex-direction: column; justify-content: space-between;
             box-shadow: var(--shadow-deep); transition: var(--transition); backdrop-filter: blur(14px);
         }
@@ -217,8 +488,9 @@
         .card-icon {
             width: 52px; height: 52px; border-radius: 14px; background: rgba(0, 149, 217, 0.16);
             border: 1px solid var(--border-bright); color: var(--ice-bright);
-            display: flex; align-items: center; justify-content: center; font-size: 1.35rem;
+            display: flex; align-items: center; justify-content: center; font-size: 1.35rem; transition: var(--transition);
         }
+        .frigo-card:hover .card-icon { background: var(--ice-primary); color: var(--text-white); transform: rotate(8deg) scale(1.06); }
         .card-badge {
             font-size: 0.75rem; font-weight: 700; color: var(--text-white);
             background: rgba(0, 149, 217, 0.16); border: 1px solid var(--border-ice); padding: 5px 12px; border-radius: 50px;
@@ -238,20 +510,48 @@
             text-decoration: none; transition: var(--transition);
         }
         .card-cta i { color: var(--ice-bright); }
-        .card-cta:hover { background: var(--ice-primary); border-color: var(--ice-bright); }
+        .card-cta:hover { background: var(--ice-primary); border-color: var(--ice-bright); transform: translateY(-2px); box-shadow: var(--shadow-ice); }
         .card-cta:hover i { color: var(--text-white); }
 
-        /* ================= LIGHTBOX & MOBILE BAR ================= */
+        /* ================= LIGHTBOX & FOOTER ================= */
         .lightbox {
-            position: fixed; inset: 0; z-index: 3000; background: rgba(2, 6, 13, 0.94);
-            backdrop-filter: blur(16px); display: none; align-items: center; justify-content: center; padding: 20px;
+            position: fixed; inset: 0; z-index: 3000; background: rgba(2, 6, 13, 0.96);
+            backdrop-filter: blur(18px); display: flex; align-items: center; justify-content: center; padding: 24px;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .lightbox.active { display: flex; }
-        .lightbox-inner { max-width: 920px; width: 100%; position: relative; text-align: center; }
-        .lightbox-inner img { width: 100%; max-height: 78vh; object-fit: contain; border-radius: 16px; border: 1px solid var(--border-bright); background: #030812; }
-        .lightbox-close { position: absolute; top: -15px; right: -15px; width: 42px; height: 42px; border-radius: 50%; background: var(--ice-primary); color: #fff; border: none; font-size: 1.1rem; cursor: pointer; }
+        .lightbox.active { opacity: 1; visibility: visible; }
+        .lightbox-inner {
+            max-width: 960px; width: 100%; position: relative; text-align: center;
+            transform: scale(0.92); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .lightbox.active .lightbox-inner { transform: scale(1); }
+        .lightbox-inner img {
+            width: 100%; max-height: 78vh; object-fit: contain; border-radius: 16px;
+            border: 1px solid var(--border-bright);
+            background: radial-gradient(circle at center, #08182e, #030812);
+            padding: 12px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+        }
+        .lightbox-caption {
+            margin-top: 12px;
+            color: var(--text-silver);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+        .lightbox-close {
+            position: absolute; top: -16px; right: -10px; z-index: 5; width: 44px; height: 44px; border-radius: 50%;
+            background: var(--ice-primary); color: #fff; border: 2px solid rgba(255,255,255,0.25); font-size: 1.15rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition);
+        }
+        .lightbox-close:hover { background: var(--ice-bright); transform: rotate(90deg); }
 
-        footer { position: relative; z-index: 1; background: #02050b; border-top: 1px solid var(--border-ice); padding: 40px 5% 90px; text-align: center; color: var(--text-muted); font-size: 0.86rem; }
+        footer { position: relative; z-index: 1; background: #02050b; border-top: 1px solid var(--border-ice); padding: 40px 5% 95px; }
+        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .legal-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+        .legal-btn { padding: 9px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice); color: var(--text-silver); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: var(--transition); }
+        .legal-btn:hover { color: var(--text-white); border-color: var(--ice-bright); }
+        .footer-bottom { padding-top: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: var(--text-muted); font-size: 0.84rem; }
 
         .mobile-sticky-bar {
             display: none; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1500;
@@ -268,46 +568,55 @@
         .mob-action-item.call-now { background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white); }
         .mob-action-item.call-now i { color: var(--text-white); }
 
-        .reveal { opacity: 0; transform: translateY(26px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1120px) {
+            .brand-logo-slogan { max-width: 185px; height: 28px; }
+        }
+        @media (max-width: 992px) {
             .top-bar { display: none; }
             .frigo-hero, .frigo-grid, .photo-strip { grid-template-columns: 1fr; }
-            .hero-img-box img { height: 340px; }
+            .hero-img-box .studio-photo-box { max-height: 360px; }
         }
         @media (max-width: 768px) {
-            .brand-logo { height: 44px; }
-            .brand-title { font-size: 1.18rem; }
+            header { padding: 10px 4%; }
+            .brand-wrap { gap: 8px; }
+            .brand-logo-emblem { height: 38px; }
+            .brand-logo-slogan { height: 22px; max-width: 145px; }
             .header-cta span { display: none; }
-            .header-cta { padding: 10px 14px; }
+            .header-cta { padding: 10px 13px; }
             .menu-toggle { display: inline-flex; }
             nav {
-                position: fixed; top: 71px; left: 0; width: 100%; background: rgba(3, 8, 18, 0.98);
-                backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-ice); padding: 20px 5%; display: none;
+                position: fixed; top: var(--header-height, 64px); left: 0; width: 100%; background: rgba(3, 8, 18, 0.98);
+                backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+                border-bottom: 1px solid var(--border-bright); padding: 16px 4% 22px; display: none;
+                z-index: 999; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85);
             }
             nav.open { display: block; }
             nav ul { flex-direction: column; align-items: stretch; gap: 8px; }
-            nav ul li a { padding: 13px 16px; font-size: 0.96rem; }
+            nav ul li a { padding: 14px 16px; font-size: 0.98rem; background: rgba(255, 255, 255, 0.02); }
             .regime-pills { grid-template-columns: 1fr; }
+            .frigo-card { padding: 24px 18px; }
             .mobile-sticky-bar { display: grid; }
+        }
+        @media (max-width: 390px) {
+            .brand-logo-emblem { height: 34px; }
+            .brand-logo-slogan { height: 18px; max-width: 118px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Filtru SVG care elimină automat fundalul alb al logo-ului direct în cod -->
-    <svg width="0" height="0" style="position:absolute; pointer-events:none;">
-        <filter id="remove-white-bg" color-interpolation-filters="sRGB">
-            <feColorMatrix type="matrix" values="
-                1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-                -3.5 -3.5 -3.5 10 0" />
-        </filter>
-    </svg>
+    <div class="ambient-bg">
+        <div class="aurora-orb one"></div>
+        <div class="aurora-orb two"></div>
+        <div class="aurora-orb three"></div>
+    </div>
 
+    <div class="scroll-progress" id="scroll-progress"></div>
     <canvas id="frost-canvas"></canvas>
+    <div class="nav-backdrop" id="nav-backdrop"></div>
 
     <!-- ================= TOP BAR ================= -->
     <div class="top-bar">
@@ -316,8 +625,8 @@
             <span class="top-bar-item"><i class="fa-solid fa-location-dot"></i> Lupești, Jud. Bacău, România</span>
         </div>
         <div class="top-bar-right">
-            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
-            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
+            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" rel="noopener" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
+            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" rel="noopener" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
             <a href="tel:0741585655" class="top-bar-item" style="color: var(--text-white); font-weight: 700;"><i class="fa-solid fa-phone"></i> 0741.585.655</a>
         </div>
     </div>
@@ -325,12 +634,8 @@
     <!-- ================= HEADER ================= -->
     <header id="header">
         <a href="index.html" class="brand-wrap">
-            <!-- POZA LOGO DIN FOLDERUL images/ -->
-            <img src="images/logo.png" onerror="this.onerror=null; this.src='images/logo.jpeg';" alt="FrigoFab Logo" class="brand-logo">
-            <div>
-                <span class="brand-title">FRIGO<span>FAB</span></span>
-                <span class="brand-subtitle">Turn On Posibilităților</span>
-            </div>
+            <img src="images/logo2.jpeg" alt="FrigoFab Emblem" class="brand-logo-emblem clean-logo-bg">
+            <img src="images/logo4.jpeg" alt="Turn On Posibilităților" class="brand-logo-slogan clean-logo-bg">
         </a>
 
         <nav id="nav-menu">
@@ -343,7 +648,7 @@
         </nav>
 
         <div class="header-actions">
-            <a href="tel:0741585655" class="header-cta">
+            <a href="tel:0741585655" class="header-cta" aria-label="Sună acum">
                 <i class="fa-solid fa-phone-volume"></i>
                 <span>0741 585 655</span>
             </a>
@@ -383,40 +688,55 @@
                 </a>
             </div>
 
-            <div class="reveal">
-                <!-- POZA 1 FRIGORIFICE: images/frigorific1.png -->
-                <div class="hero-img-box tilt-element" onclick="openLightbox('images/frigorific1.png')">
-                    <img src="images/frigorific1.png" alt="Instalatii Frigorifice Comerciale si Industriale FrigoFab">
+            <div class="hero-visual reveal">
+                <div class="hero-img-box tilt-element">
+                    <div class="studio-photo-box" onclick="openLightbox('images/frigorifice.png', 'Instalații Frigorifice Comerciale și Industriale FrigoFab')">
+                        <img src="images/frigorifice.png" alt="Instalatii Frigorifice Comerciale si Industriale FrigoFab">
+                        <span class="zoom-pill"><i class="fa-solid fa-expand"></i> Mărește</span>
+                    </div>
+                    <div class="hero-caption-bar">
+                        <div class="hero-caption-icon"><i class="fa-solid fa-snowflake"></i></div>
+                        <div>
+                            <h4>Proiectare &amp; Execuție la Comandă</h4>
+                            <span>Eficiență Energetică • Automatizare Digitală • ISO 9001</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= CELE 3 POZE REPREZENTATIVE (images/frigorific2, frigorific3, frigorific4) ================= -->
+        <!-- ================= CELE 3 POZE REPREZENTATIVE (PERFECT FIT) ================= -->
         <div class="photo-strip reveal">
-            <!-- POZA 2 FRIGORIFICE: images/frigorific2.png -->
-            <div class="photo-strip-card tilt-element" onclick="openLightbox('images/frigorific2.png')">
-                <img src="images/frigorific2.png" alt="Camere Frigorifice Modulare">
+            <div class="photo-strip-card interactive-card tilt-element">
+                <div class="studio-photo-box" onclick="openLightbox('images/frigorific2.png', 'Camere Frigorifice Modulare PUR/PIR')">
+                    <img src="images/frigorific2.png" alt="Camere Frigorifice Modulare">
+                    <span class="zoom-pill"><i class="fa-solid fa-expand"></i> Mărește</span>
+                </div>
                 <div class="photo-strip-label">
                     <span>Camere Frigorifice Modulare</span>
-                    <i class="fa-solid fa-expand"></i>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </div>
             </div>
 
-            <!-- POZA 3 FRIGORIFICE: images/frigorific3.png -->
-            <div class="photo-strip-card tilt-element" onclick="openLightbox('images/frigorific3.png')">
-                <img src="images/frigorific3.png" alt="Frigorifice Auto si Automatizari">
+            <div class="photo-strip-card interactive-card tilt-element">
+                <div class="studio-photo-box" onclick="openLightbox('images/auto.png', 'Frigorifice Auto & Automatizări')">
+                    <img src="images/auto.png" alt="Frigorifice Auto si Automatizari">
+                    <span class="zoom-pill"><i class="fa-solid fa-expand"></i> Mărește</span>
+                </div>
                 <div class="photo-strip-label">
                     <span>Frigorifice Auto &amp; Automatizări</span>
-                    <i class="fa-solid fa-expand"></i>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </div>
             </div>
 
-            <!-- POZA 4 FRIGORIFICE: images/frigorific4.png -->
-            <div class="photo-strip-card tilt-element" onclick="openLightbox('images/frigorific4.png')">
-                <img src="images/frigorific4.png" alt="Agregate si Centrale Frigorifice">
+            <div class="photo-strip-card interactive-card tilt-element">
+                <div class="studio-photo-box" onclick="openLightbox('images/instalatie.png', 'Agregate & Instalații Frigorifice')">
+                    <img src="images/instalatie.png" alt="Agregate si Centrale Frigorifice">
+                    <span class="zoom-pill"><i class="fa-solid fa-expand"></i> Mărește</span>
+                </div>
                 <div class="photo-strip-label">
                     <span>Agregate &amp; Instalații Frigorifice</span>
-                    <i class="fa-solid fa-expand"></i>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </div>
             </div>
         </div>
@@ -429,9 +749,9 @@
             </div>
 
             <div class="filter-bar reveal">
-                <button class="filter-btn active" onclick="filterFrigo('all', this)">Toate Sistemele</button>
-                <button class="filter-btn" onclick="filterFrigo('camere', this)">Camere &amp; Agregate</button>
-                <button class="filter-btn" onclick="filterFrigo('service', this)">Frigo Auto, Retrofit &amp; Service</button>
+                <button type="button" class="filter-btn active" onclick="filterFrigo('all', this)">Toate Sistemele</button>
+                <button type="button" class="filter-btn" onclick="filterFrigo('camere', this)">Camere &amp; Agregate</button>
+                <button type="button" class="filter-btn" onclick="filterFrigo('service', this)">Frigo Auto, Retrofit &amp; Service</button>
             </div>
 
             <div class="frigo-grid">
@@ -450,7 +770,7 @@
                             <li><i class="fa-solid fa-check"></i> Podea izolată ranforsată și plintă sanitară</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Camer%C4%83%20Frigorific%C4%83." target="_blank" class="card-cta">
+                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Camer%C4%83%20Frigorific%C4%83." target="_blank" rel="noopener" class="card-cta">
                         <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Cameră
                     </a>
                 </div>
@@ -470,7 +790,7 @@
                             <li><i class="fa-solid fa-check"></i> Trasee din cupru izolate profesional</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Agregat%20/%20Instala%C8%9Bie%20Frigorific%C4%83." target="_blank" class="card-cta">
+                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Agregat%20/%20Instala%C8%9Bie%20Frigorific%C4%83." target="_blank" rel="noopener" class="card-cta">
                         <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Agregat
                     </a>
                 </div>
@@ -490,7 +810,7 @@
                             <li><i class="fa-solid fa-check"></i> Diagnoză, încărcare freon și reparații</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Frigorifice%20Auto." target="_blank" class="card-cta">
+                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Frigorifice%20Auto." target="_blank" rel="noopener" class="card-cta">
                         <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Frigo Auto
                     </a>
                 </div>
@@ -510,7 +830,7 @@
                             <li><i class="fa-solid fa-check"></i> Intervenții în garanție și post-garanție</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Solicit%20Service%20/%20Retrofit%20Frigorific." target="_blank" class="card-cta">
+                    <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Solicit%20Service%20/%20Retrofit%20Frigorific." target="_blank" rel="noopener" class="card-cta">
                         <i class="fa-brands fa-whatsapp"></i> Solicită Service / Retrofit
                     </a>
                 </div>
@@ -519,16 +839,29 @@
     </div>
 
     <!-- ================= LIGHTBOX ================= -->
-    <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
-        <div class="lightbox-inner">
-            <button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+        <div class="lightbox-inner" onclick="event.stopPropagation()">
+            <button type="button" class="lightbox-close" aria-label="Închide" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
             <img id="lightbox-img" src="" alt="Frigorifice FrigoFab">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
         </div>
     </div>
 
     <!-- ================= FOOTER ================= -->
     <footer>
-        <p>&copy; 2026 <strong>FRIGO FAB (SC PROD SONRESA SRL)</strong> • Lupești, Jud. Bacău • Tel: 0741 585 655 • Sistem Certificat ISO 9001</p>
+        <div class="footer-top">
+            <div class="brand-wrap">
+                <img src="images/logo2.jpeg" alt="FrigoFab Emblem" class="brand-logo-emblem clean-logo-bg" style="height: 44px;">
+                <img src="images/logo4.jpeg" alt="Turn On Posibilităților" class="brand-logo-slogan clean-logo-bg" style="height: 28px;">
+            </div>
+            <div class="legal-badges">
+                <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener" class="legal-btn"><i class="fa-solid fa-scale-balanced"></i> ANPC – SAL</a>
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" class="legal-btn"><i class="fa-solid fa-globe"></i> Platforma SOL</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 <strong>FRIGO FAB (SC PROD SONRESA SRL)</strong> • Lupești, Jud. Bacău • Tel: 0741 585 655 • Sistem Certificat ISO 9001</p>
+        </div>
     </footer>
 
     <!-- ================= MOBILE STICKY BAR ================= -->
@@ -543,36 +876,87 @@
         const header = document.getElementById('header');
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
+        const navBackdrop = document.getElementById('nav-backdrop');
+        const scrollProgress = document.getElementById('scroll-progress');
 
-        window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 40));
-        menuToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
-
-        function openLightbox(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').classList.add('active');
+        function syncHeaderHeight() {
+            const rect = header.getBoundingClientRect();
+            document.documentElement.style.setProperty('--header-height', `${Math.round(rect.bottom)}px`);
         }
 
-        // Eliminare automată fundal alb logo prin Canvas + filtrul SVG deja activ
+        function toggleMobileMenu(forceClose = false) {
+            syncHeaderHeight();
+            const isOpen = forceClose ? false : !navMenu.classList.contains('open');
+            navMenu.classList.toggle('open', isOpen);
+            navBackdrop.classList.toggle('active', isOpen);
+            menuToggle.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        }
+
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 40);
+            syncHeaderHeight();
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+            scrollProgress.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+        });
+        window.addEventListener('resize', syncHeaderHeight);
+        syncHeaderHeight();
+
+        menuToggle.addEventListener('click', () => toggleMobileMenu());
+        navBackdrop.addEventListener('click', () => toggleMobileMenu(true));
+        navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => toggleMobileMenu(true)));
+
+        function openLightbox(src, altText = 'Frigorifice FrigoFab') {
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const cap = document.getElementById('lightbox-caption');
+            img.src = src;
+            img.alt = altText;
+            cap.textContent = altText;
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            if (e && e.target !== document.getElementById('lightbox')) return;
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Clean light background around logos with safe fallback
         window.addEventListener('load', () => {
-            document.querySelectorAll('.brand-logo').forEach(img => {
-                try {
-                    const c = document.createElement('canvas');
-                    const ctx = c.getContext('2d');
-                    c.width = img.naturalWidth;
-                    c.height = img.naturalHeight;
-                    if (!c.width || !c.height) return;
-                    ctx.drawImage(img, 0, 0);
-                    const imgData = ctx.getImageData(0, 0, c.width, c.height);
-                    const d = imgData.data;
-                    for (let i = 0; i < d.length; i += 4) {
-                        if (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235) {
-                            d[i + 3] = 0;
+            document.querySelectorAll('.clean-logo-bg').forEach(img => {
+                const processImage = () => {
+                    try {
+                        const c = document.createElement('canvas');
+                        const ctx = c.getContext('2d');
+                        c.width = img.naturalWidth;
+                        c.height = img.naturalHeight;
+                        if (!c.width || !c.height) return;
+                        ctx.drawImage(img, 0, 0);
+                        const imgData = ctx.getImageData(0, 0, c.width, c.height);
+                        const d = imgData.data;
+
+                        const bgR = d[0], bgG = d[1], bgB = d[2];
+                        for (let i = 0; i < d.length; i += 4) {
+                            const r = d[i], g = d[i + 1], b = d[i + 2];
+                            const dist = Math.hypot(r - bgR, g - bgG, b - bgB);
+                            if (dist < 14 && r < 252) {
+                                d[i + 3] = 0;
+                            }
                         }
+                        ctx.putImageData(imgData, 0, 0);
+                        img.src = c.toDataURL('image/png');
+                    } catch (e) {
+                        img.style.mixBlendMode = 'lighten';
                     }
-                    ctx.putImageData(imgData, 0, 0);
-                    img.src = c.toDataURL('image/png');
-                    img.style.filter = 'drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45))';
-                } catch (e) {}
+                };
+                if (img.complete) processImage();
+                else img.onload = processImage;
             });
         });
 
@@ -580,27 +964,37 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             document.querySelectorAll('.frigo-card').forEach(card => {
-                card.style.display = (group === 'all' || card.dataset.group === group) ? 'flex' : 'none';
+                const show = (group === 'all' || card.dataset.group === group);
+                card.style.display = show ? 'flex' : 'none';
+                if (show) {
+                    card.classList.remove('visible');
+                    requestAnimationFrame(() => card.classList.add('visible'));
+                }
             });
         }
 
         document.querySelectorAll('.interactive-card, .tilt-element').forEach(el => {
             el.addEventListener('mousemove', e => {
+                if (window.innerWidth <= 992) return;
                 const rect = el.getBoundingClientRect();
                 const x = e.clientX - rect.left, y = e.clientY - rect.top;
                 el.style.setProperty('--mouse-x', `${x}px`);
                 el.style.setProperty('--mouse-y', `${y}px`);
-                if (window.innerWidth > 992 && el.classList.contains('tilt-element')) {
+                if (el.classList.contains('tilt-element')) {
                     const rotateX = ((y - rect.height / 2) / rect.height) * -5;
                     const rotateY = ((x - rect.width / 2) / rect.width) * 5;
-                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
                 }
             });
             el.addEventListener('mouseleave', () => { el.style.transform = ''; });
         });
 
         const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            entries.forEach((entry, idx) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), idx * 70);
+                }
+            });
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
@@ -611,20 +1005,33 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
         window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-        for (let i = 0; i < 40; i++) {
-            particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 + 0.8, sy: Math.random() * 0.4 + 0.15, sx: (Math.random() - 0.5) * 0.25, a: Math.random() * 0.4 + 0.2 });
+
+        const particleCount = window.innerWidth < 768 ? 20 : 48;
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2.2 + 0.8,
+                sy: Math.random() * 0.45 + 0.15,
+                sx: (Math.random() - 0.5) * 0.3,
+                a: Math.random() * 0.5 + 0.2
+            });
         }
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
                 ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(56, 189, 248, ${p.a})`; ctx.fill();
-                p.y += p.sy; p.x += p.sx; if (p.y > canvas.height) p.y = -5;
-                if (mouse.x) {
+                p.y += p.sy; p.x += p.sx;
+                if (p.y > canvas.height) p.y = -5;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+
+                if (mouse.x && window.innerWidth > 992) {
                     const dist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-                    if (dist < 120) {
+                    if (dist < 140) {
                         ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 120) * 0.22})`; ctx.stroke();
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 140) * 0.28})`; ctx.stroke();
                     }
                 }
             });
