@@ -18,21 +18,22 @@
         :root {
             --bg-deep: #030812;
             --bg-navy: #071324;
-            --bg-card: rgba(10, 25, 47, 0.75);
+            --bg-card: rgba(10, 25, 47, 0.74);
             --ice-primary: #0095d9;
             --ice-bright: #38bdf8;
+            --ice-cyan: #7dd3fc;
             --text-white: #ffffff;
             --text-silver: #cbd5e1;
             --text-muted: #94a3b8;
             --border-ice: rgba(56, 189, 248, 0.22);
-            --border-bright: rgba(56, 189, 248, 0.55);
-            --shadow-deep: 0 25px 55px -12px rgba(0, 0, 0, 0.8);
-            --shadow-ice: 0 12px 35px -5px rgba(0, 149, 217, 0.45);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --border-bright: rgba(56, 189, 248, 0.58);
+            --shadow-deep: 0 25px 55px -12px rgba(0, 0, 0, 0.85);
+            --shadow-ice: 0 14px 38px -5px rgba(0, 149, 217, 0.48);
+            --transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -40,25 +41,194 @@
             color: var(--text-white);
             line-height: 1.65;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Engineering Grid + Animated Cryo Aurora */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
             background-image: 
-                radial-gradient(circle at 18% 12%, rgba(0, 149, 217, 0.16) 0%, transparent 40%),
-                radial-gradient(circle at 82% 55%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+                linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        .aurora-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(95px);
+            opacity: 0.42;
+            animation: auroraDrift 16s ease-in-out infinite alternate;
+        }
+        .aurora-orb.one {
+            width: 520px; height: 520px;
+            top: -10%; left: -8%;
+            background: radial-gradient(circle, rgba(0, 149, 217, 0.45), transparent 70%);
+        }
+        .aurora-orb.two {
+            width: 480px; height: 480px;
+            bottom: 8%; right: -10%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 70%);
+            animation-delay: -6s;
+        }
+        .aurora-orb.three {
+            width: 360px; height: 360px;
+            top: 45%; left: 40%;
+            background: radial-gradient(circle, rgba(2, 132, 199, 0.25), transparent 70%);
+            animation-delay: -11s;
+        }
+
+        @keyframes auroraDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(35px, -25px) scale(1.08); }
+            100% { transform: translate(-25px, 30px) scale(0.95); }
         }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: var(--ice-primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--ice-primary), var(--ice-bright)); border-radius: 4px; }
 
-        #frost-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .container { max-width: 1260px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 1; }
-
-        .interactive-card { position: relative; overflow: hidden; transform-style: preserve-3d; will-change: transform; }
-        .interactive-card::before {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.14), transparent 40%);
-            opacity: 0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1;
+        .scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px; width: 0%;
+            background: linear-gradient(90deg, var(--ice-primary), var(--ice-bright), var(--ice-cyan));
+            z-index: 2500;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.85);
+            transition: width 0.08s linear;
         }
+
+        #frost-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 0 5%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= INTERACTIVE CARDS & ANIMATIONS ================= */
+        .interactive-card {
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        .interactive-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.16), transparent 42%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
         .interactive-card:hover::before { opacity: 1; }
+
+        @keyframes sheenSweep {
+            0% { left: -120%; }
+            28%, 100% { left: 145%; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            50% { box-shadow: 0 0 26px 3px rgba(56, 189, 248, 0.25); }
+        }
+
+        @keyframes cryoScan {
+            0% { top: -15%; opacity: 0; }
+            20% { opacity: 0.75; }
+            80% { opacity: 0.75; }
+            100% { top: 115%; opacity: 0; }
+        }
+
+        /* ================= PERFECT FIT STUDIO IMAGE SHOWCASE ================= */
+        .studio-photo-box {
+            position: relative;
+            width: 100%;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.16) 0%, rgba(7, 19, 36, 0.92) 72%),
+                linear-gradient(180deg, #061224 0%, #030914 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .studio-photo-box::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.8), transparent);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+            top: -15%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .studio-photo-box:hover::after {
+            animation: cryoScan 1.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .studio-photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            padding: 16px;
+            filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.75));
+            transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .studio-photo-box:hover img {
+            transform: scale(1.045);
+            filter: drop-shadow(0 18px 30px rgba(0, 149, 217, 0.35));
+        }
+
+        .zoom-badge {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            z-index: 4;
+            background: rgba(3, 8, 18, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-bright);
+            color: var(--text-white);
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .studio-photo-box:hover .zoom-badge {
+            background: var(--ice-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-ice);
+        }
+        .zoom-badge i { color: var(--ice-bright); }
+        .studio-photo-box:hover .zoom-badge i { color: #fff; }
 
         /* ================= TOP BAR ================= */
         .top-bar {
@@ -79,74 +249,117 @@
         .top-bar-item i { color: var(--ice-bright); }
         .top-bar-item:hover { color: var(--text-white); }
 
-        /* ================= HEADER ================= */
+        /* ================= HEADER & LOGOS ================= */
         header {
             position: sticky;
             top: 0;
             width: 100%;
             z-index: 1000;
-            padding: 14px 5%;
-            background: rgba(3, 8, 18, 0.85);
+            padding: 12px 5%;
+            background: rgba(3, 8, 18, 0.86);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-ice);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
             transition: var(--transition);
         }
 
         header.scrolled {
-            padding: 10px 5%;
-            background: rgba(3, 8, 18, 0.96);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+            padding: 9px 5%;
+            background: rgba(3, 8, 18, 0.97);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75);
         }
 
-        .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            min-width: 0;
+            flex-shrink: 1;
+        }
         
-        /* Logo fără fundal alb - filtrat automat în cod */
-        .brand-logo {
-            height: 54px;
+        .brand-logo-emblem {
+            height: 50px;
             width: auto;
+            object-fit: contain;
             background: transparent;
-            padding: 0;
-            filter: url(#remove-white-bg) drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45));
+            filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.4));
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .brand-logo-slogan {
+            height: 34px;
+            width: auto;
+            max-width: 240px;
+            object-fit: contain;
+            background: transparent;
+            filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.35));
             transition: var(--transition);
         }
-        .brand-wrap:hover .brand-logo { transform: scale(1.06); }
-        .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-white); line-height: 1.05; display: block; }
-        .brand-title span { color: var(--ice-bright); }
-        .brand-subtitle { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-top: 2px; }
 
-        nav ul { display: flex; list-style: none; align-items: center; gap: 8px; }
+        .brand-wrap:hover .brand-logo-emblem,
+        .brand-wrap:hover .brand-logo-slogan {
+            transform: scale(1.04);
+            filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.65));
+        }
+
+        nav ul { display: flex; list-style: none; align-items: center; gap: 6px; }
         nav ul li a {
-            color: var(--text-silver); text-decoration: none; font-weight: 600; font-size: 0.91rem;
-            padding: 10px 16px; border-radius: 10px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent;
+            color: var(--text-silver); text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            padding: 10px 14px; border-radius: 10px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent;
+            white-space: nowrap;
         }
-        nav ul li a i { color: var(--ice-bright); }
-        nav ul li a:hover, nav ul li a.active { color: var(--text-white); background: rgba(0, 149, 217, 0.2); border-color: var(--border-ice); }
+        nav ul li a i { color: var(--ice-bright); transition: transform 0.3s ease; }
+        nav ul li a:hover i { transform: scale(1.15); }
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--text-white);
+            background: rgba(0, 149, 217, 0.18);
+            border-color: var(--border-ice);
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.14);
+        }
 
-        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .header-cta {
-            display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
-            color: var(--text-white); text-decoration: none; padding: 11px 22px; border-radius: 50px; font-weight: 700; font-size: 0.92rem; box-shadow: var(--shadow-ice); border: 1px solid rgba(255, 255, 255, 0.22); transition: var(--transition);
+            position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            color: var(--text-white); text-decoration: none; padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow-ice); border: 1px solid rgba(255, 255, 255, 0.22); transition: var(--transition);
+            animation: pulseGlow 3.2s infinite;
         }
-        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.6); }
+        .header-cta::after {
+            content: ''; position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+            transform: skewX(-25deg); animation: sheenSweep 4.5s infinite;
+        }
+        .header-cta:hover { transform: translateY(-2px); box-shadow: 0 15px 32px rgba(56, 189, 248, 0.65); }
 
         .menu-toggle {
             display: none; width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 149, 217, 0.15);
-            border: 1px solid var(--border-ice); color: #fff; font-size: 1.3rem; cursor: pointer; align-items: center; justify-content: center;
+            border: 1px solid var(--border-ice); color: #fff; font-size: 1.25rem; cursor: pointer; align-items: center; justify-content: center;
         }
 
+        .nav-backdrop {
+            display: none; position: fixed; inset: 0;
+            background: rgba(2, 6, 13, 0.72); backdrop-filter: blur(4px); z-index: 998;
+        }
+        .nav-backdrop.active { display: block; }
+
         /* ================= PAGE HERO ================= */
-        .page-hero { text-align: center; max-width: 860px; margin: 0 auto; padding: 60px 0 40px; }
+        .page-hero { text-align: center; max-width: 860px; margin: 0 auto; padding: 55px 0 38px; }
         .hero-tag {
-            display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.78rem;
-            letter-spacing: 2px; text-transform: uppercase; color: var(--ice-bright);
+            display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.76rem;
+            letter-spacing: 1.8px; text-transform: uppercase; color: var(--ice-bright);
             background: rgba(0, 149, 217, 0.14); border: 1px solid var(--border-ice); padding: 6px 18px; border-radius: 50px; margin-bottom: 16px;
         }
         .page-hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(2rem, 3.8vw, 3.2rem); font-weight: 900; text-transform: uppercase; line-height: 1.12; margin-bottom: 14px; color: var(--text-white); }
-        .page-hero h1 span { color: var(--ice-bright); }
+        .page-hero h1 span {
+            background: linear-gradient(90deg, var(--ice-bright), var(--ice-cyan), var(--ice-primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
         .page-hero p { color: var(--text-silver); font-size: 1.02rem; margin-bottom: 28px; }
 
         .filter-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
@@ -155,7 +368,8 @@
             padding: 11px 22px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700;
             font-size: 0.84rem; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;
         }
-        .filter-tab i { color: var(--ice-bright); }
+        .filter-tab i { color: var(--ice-bright); transition: transform 0.3s ease; }
+        .filter-tab:hover i, .filter-tab.active i { transform: scale(1.15); }
         .filter-tab:hover, .filter-tab.active {
             background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white);
             border-color: var(--ice-bright); box-shadow: var(--shadow-ice); transform: translateY(-2px);
@@ -165,29 +379,31 @@
         /* ================= SHOWCASE CARDS ================= */
         .showcase-list { display: flex; flex-direction: column; gap: 38px; padding: 25px 0 85px; }
         .showcase-card {
-            display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 38px; align-items: center;
+            display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 38px; align-items: stretch;
             background: var(--bg-card); border: 1px solid var(--border-ice); border-radius: 26px;
             padding: 34px; box-shadow: var(--shadow-deep); backdrop-filter: blur(16px); transition: var(--transition);
         }
-        .showcase-card:hover { border-color: var(--ice-bright); }
+        .showcase-card:hover { border-color: var(--ice-bright); box-shadow: 0 25px 55px rgba(0, 149, 217, 0.28); transform: translateY(-4px); }
 
         .photo-frame {
-            position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-ice);
-            background: #040c18; cursor: zoom-in;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-ice);
+            display: flex;
+            min-height: 360px;
+            transition: var(--transition);
         }
-        .photo-frame img { width: 100%; height: 390px; object-fit: cover; display: block; transition: transform 0.65s ease; }
-        .photo-frame:hover img { transform: scale(1.05); }
+        .showcase-card:hover .photo-frame { border-color: var(--border-bright); }
 
-        .zoom-badge {
-            position: absolute; bottom: 14px; right: 14px; background: rgba(3, 8, 18, 0.88);
-            backdrop-filter: blur(8px); border: 1px solid var(--border-ice); color: var(--text-white);
-            padding: 6px 13px; border-radius: 50px; font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+        .card-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .zoom-badge i { color: var(--ice-bright); }
-
-        .card-content { position: relative; z-index: 2; }
         .gama-tag {
-            display: inline-block; font-weight: 700; font-size: 0.76rem;
+            display: inline-block; align-self: flex-start; font-weight: 700; font-size: 0.76rem;
             letter-spacing: 1.8px; text-transform: uppercase; color: var(--ice-bright);
             background: rgba(0, 149, 217, 0.14); border: 1px solid var(--border-ice); padding: 5px 14px; border-radius: 50px; margin-bottom: 10px;
         }
@@ -197,9 +413,10 @@
         .spec-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
         .spec-pill {
             background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-ice);
-            border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+            border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; transition: var(--transition);
         }
-        .spec-pill i { color: var(--ice-bright); font-size: 1.15rem; }
+        .spec-pill:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.1); transform: translateY(-2px); }
+        .spec-pill i { color: var(--ice-bright); font-size: 1.15rem; flex-shrink: 0; }
         .spec-pill strong { display: block; font-size: 0.86rem; color: var(--text-white); line-height: 1.2; }
         .spec-pill span { font-size: 0.76rem; color: var(--text-muted); }
 
@@ -211,36 +428,70 @@
             background: rgba(3, 8, 18, 0.75); border: 1px solid var(--border-ice); color: var(--text-silver);
             padding: 7px 14px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: var(--transition);
         }
-        .post-btn.active, .post-btn:hover { background: var(--ice-primary); color: var(--text-white); border-color: var(--ice-bright); }
-        .post-dynamic-info { font-size: 0.85rem; color: var(--text-silver); }
+        .post-btn.active, .post-btn:hover { background: var(--ice-primary); color: var(--text-white); border-color: var(--ice-bright); transform: translateY(-1px); }
+        .post-dynamic-info { font-size: 0.85rem; color: var(--text-silver); transition: opacity 0.25s ease; }
         .post-dynamic-info strong { color: var(--text-white); }
 
         .action-row { display: flex; flex-wrap: wrap; gap: 12px; }
         .btn-wa {
-            display: inline-flex; align-items: center; gap: 9px; background: linear-gradient(135deg, var(--ice-primary), #0284c7);
+            position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; gap: 9px; background: linear-gradient(135deg, var(--ice-primary), #0369a1);
             color: var(--text-white); text-decoration: none; padding: 13px 22px; border-radius: 12px; font-weight: 700; font-size: 0.92rem;
             box-shadow: var(--shadow-ice); transition: var(--transition); border: 1px solid var(--border-bright);
         }
-        .btn-wa:hover { transform: translateY(-2px); }
+        .btn-wa::after {
+            content: ''; position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+            transform: skewX(-25deg); animation: sheenSweep 5s infinite;
+        }
+        .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0, 149, 217, 0.6); }
         .btn-call {
             display: inline-flex; align-items: center; gap: 9px; background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-ice); color: var(--text-white); text-decoration: none; padding: 13px 22px;
             border-radius: 12px; font-weight: 700; font-size: 0.92rem; transition: var(--transition);
         }
         .btn-call i { color: var(--ice-bright); }
-        .btn-call:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.14); }
+        .btn-call:hover { border-color: var(--ice-bright); background: rgba(0, 149, 217, 0.14); transform: translateY(-2px); }
 
         /* ================= LIGHTBOX & FOOTER ================= */
         .lightbox {
-            position: fixed; inset: 0; z-index: 3000; background: rgba(2, 6, 13, 0.94);
-            backdrop-filter: blur(16px); display: none; align-items: center; justify-content: center; padding: 20px;
+            position: fixed; inset: 0; z-index: 3000; background: rgba(2, 6, 13, 0.96);
+            backdrop-filter: blur(18px); display: flex; align-items: center; justify-content: center; padding: 24px;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .lightbox.active { display: flex; }
-        .lightbox-inner { max-width: 920px; width: 100%; position: relative; text-align: center; }
-        .lightbox-inner img { width: 100%; max-height: 78vh; object-fit: contain; border-radius: 16px; border: 1px solid var(--border-bright); background: #030812; }
-        .lightbox-close { position: absolute; top: -15px; right: -15px; width: 42px; height: 42px; border-radius: 50%; background: var(--ice-primary); color: #fff; border: none; font-size: 1.1rem; cursor: pointer; }
+        .lightbox.active { opacity: 1; visibility: visible; }
+        .lightbox-inner {
+            max-width: 960px; width: 100%; position: relative; text-align: center;
+            transform: scale(0.92); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .lightbox.active .lightbox-inner { transform: scale(1); }
+        .lightbox-inner img {
+            width: 100%; max-height: 78vh; object-fit: contain; border-radius: 16px;
+            border: 1px solid var(--border-bright);
+            background: radial-gradient(circle at center, #08182e, #030812);
+            padding: 12px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+        }
+        .lightbox-caption {
+            margin-top: 12px;
+            color: var(--text-silver);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+        .lightbox-close {
+            position: absolute; top: -16px; right: -10px; z-index: 5; width: 44px; height: 44px; border-radius: 50%;
+            background: var(--ice-primary); color: #fff; border: 2px solid rgba(255,255,255,0.25); font-size: 1.15rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition);
+        }
+        .lightbox-close:hover { background: var(--ice-bright); transform: rotate(90deg); }
 
-        footer { position: relative; z-index: 1; background: #02050b; border-top: 1px solid var(--border-ice); padding: 40px 5% 90px; text-align: center; color: var(--text-muted); font-size: 0.86rem; }
+        footer { position: relative; z-index: 1; background: #02050b; border-top: 1px solid var(--border-ice); padding: 40px 5% 95px; }
+        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .legal-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+        .legal-btn { padding: 9px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-ice); color: var(--text-silver); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: var(--transition); }
+        .legal-btn:hover { color: var(--text-white); border-color: var(--ice-bright); }
+        .footer-bottom { padding-top: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: var(--text-muted); font-size: 0.84rem; }
 
         .mobile-sticky-bar {
             display: none; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1500;
@@ -257,47 +508,55 @@
         .mob-action-item.call-now { background: linear-gradient(135deg, var(--ice-primary), #0284c7); color: var(--text-white); }
         .mob-action-item.call-now i { color: var(--text-white); }
 
-        .reveal { opacity: 0; transform: translateY(26px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
+        @media (max-width: 1120px) {
+            .brand-logo-slogan { max-width: 185px; height: 28px; }
+        }
         @media (max-width: 992px) {
             .top-bar { display: none; }
             .showcase-card { grid-template-columns: 1fr; }
-            .photo-frame img { height: 320px; }
+            .photo-frame { min-height: 290px; aspect-ratio: 4 / 3; }
         }
         @media (max-width: 768px) {
-            .brand-logo { height: 44px; }
-            .brand-title { font-size: 1.18rem; }
+            header { padding: 10px 4%; }
+            .brand-wrap { gap: 8px; }
+            .brand-logo-emblem { height: 38px; }
+            .brand-logo-slogan { height: 22px; max-width: 145px; }
             .header-cta span { display: none; }
-            .header-cta { padding: 10px 14px; }
+            .header-cta { padding: 10px 13px; }
             .menu-toggle { display: inline-flex; }
             nav {
-                position: fixed; top: 71px; left: 0; width: 100%; background: rgba(3, 8, 18, 0.98);
-                backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-ice); padding: 20px 5%; display: none;
+                position: fixed; top: var(--header-height, 64px); left: 0; width: 100%; background: rgba(3, 8, 18, 0.98);
+                backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+                border-bottom: 1px solid var(--border-bright); padding: 16px 4% 22px; display: none;
+                z-index: 999; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85);
             }
             nav.open { display: block; }
             nav ul { flex-direction: column; align-items: stretch; gap: 8px; }
-            nav ul li a { padding: 13px 16px; font-size: 0.96rem; }
+            nav ul li a { padding: 14px 16px; font-size: 0.98rem; background: rgba(255, 255, 255, 0.02); }
             .spec-pills { grid-template-columns: 1fr; }
             .showcase-card { padding: 22px 16px; }
             .mobile-sticky-bar { display: grid; }
+        }
+        @media (max-width: 390px) {
+            .brand-logo-emblem { height: 34px; }
+            .brand-logo-slogan { height: 18px; max-width: 118px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Filtru SVG care elimină automat fundalul alb al logo-ului direct în cod -->
-    <svg width="0" height="0" style="position:absolute; pointer-events:none;">
-        <filter id="remove-white-bg" color-interpolation-filters="sRGB">
-            <feColorMatrix type="matrix" values="
-                1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-                -3.5 -3.5 -3.5 10 0" />
-        </filter>
-    </svg>
+    <div class="ambient-bg">
+        <div class="aurora-orb one"></div>
+        <div class="aurora-orb two"></div>
+        <div class="aurora-orb three"></div>
+    </div>
 
+    <div class="scroll-progress" id="scroll-progress"></div>
     <canvas id="frost-canvas"></canvas>
+    <div class="nav-backdrop" id="nav-backdrop"></div>
 
     <!-- ================= TOP BAR ================= -->
     <div class="top-bar">
@@ -306,8 +565,8 @@
             <span class="top-bar-item"><i class="fa-solid fa-location-dot"></i> Lupești, Jud. Bacău, România</span>
         </div>
         <div class="top-bar-right">
-            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
-            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
+            <a href="https://www.facebook.com/search/top?q=FrigoFab" target="_blank" rel="noopener" class="top-bar-item"><i class="fa-brands fa-facebook"></i> FrigoFab @</a>
+            <a href="https://www.tiktok.com/search?q=FrigoFab" target="_blank" rel="noopener" class="top-bar-item"><i class="fa-brands fa-tiktok"></i> FrigoFab @</a>
             <a href="tel:0741585655" class="top-bar-item" style="color: var(--text-white); font-weight: 700;"><i class="fa-solid fa-phone"></i> 0741.585.655</a>
         </div>
     </div>
@@ -315,12 +574,8 @@
     <!-- ================= HEADER ================= -->
     <header id="header">
         <a href="index.html" class="brand-wrap">
-            <!-- POZA LOGO DIN FOLDERUL images/ -->
-            <img src="images/logo.png" onerror="this.onerror=null; this.src='images/logo.jpeg';" alt="FrigoFab Logo" class="brand-logo">
-            <div>
-                <span class="brand-title">FRIGO<span>FAB</span></span>
-                <span class="brand-subtitle">Turn On Posibilităților</span>
-            </div>
+            <img src="images/logo2.jpeg" alt="FrigoFab Emblem" class="brand-logo-emblem clean-logo-bg">
+            <img src="images/logo4.jpeg" alt="Turn On Posibilităților" class="brand-logo-slogan clean-logo-bg">
         </a>
 
         <nav id="nav-menu">
@@ -333,7 +588,7 @@
         </nav>
 
         <div class="header-actions">
-            <a href="tel:0741585655" class="header-cta">
+            <a href="tel:0741585655" class="header-cta" aria-label="Sună acum">
                 <i class="fa-solid fa-phone-volume"></i>
                 <span>0741 585 655</span>
             </a>
@@ -353,10 +608,10 @@
             </p>
 
             <div class="filter-tabs">
-                <button class="filter-tab active" onclick="filterCards('all', this)"><i class="fa-solid fa-layer-group"></i> Toate Gamele</button>
-                <button class="filter-tab" onclick="filterCards('kold-air', this)"><i class="fa-solid fa-temperature-low"></i> Gama Kold Air (Frigidere Mortuare)</button>
-                <button class="filter-tab" onclick="filterCards('kold-assist', this)"><i class="fa-solid fa-up-down"></i> Gama Kold Assist (Elevatoare)</button>
-                <button class="filter-tab" onclick="filterCards('kold-salm', this)"><i class="fa-solid fa-wind"></i> Gama Kold Salm (Capace Frigorifice)</button>
+                <button type="button" class="filter-tab active" onclick="filterCards('all', this)"><i class="fa-solid fa-layer-group"></i> Toate Gamele</button>
+                <button type="button" class="filter-tab" onclick="filterCards('kold-air', this)"><i class="fa-solid fa-temperature-low"></i> Gama Kold Air (Frigidere Mortuare)</button>
+                <button type="button" class="filter-tab" onclick="filterCards('kold-assist', this)"><i class="fa-solid fa-up-down"></i> Gama Kold Assist (Elevatoare)</button>
+                <button type="button" class="filter-tab" onclick="filterCards('kold-salm', this)"><i class="fa-solid fa-wind"></i> Gama Kold Salm (Capace Frigorifice)</button>
             </div>
         </div>
 
@@ -365,10 +620,11 @@
 
             <!-- 1. GAMA KOLD AIR -->
             <div class="showcase-card interactive-card reveal" data-cat="kold-air">
-                <!-- POZA 1 FUNERARE: images/funerar1.png -->
-                <div class="photo-frame tilt-element" onclick="openLightbox('images/funerar1.png')">
-                    <img src="images/funerar1.png" alt="Frigider Mortuar Inox Gama Kold Air">
-                    <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                <div class="photo-frame tilt-element">
+                    <div class="studio-photo-box" onclick="openLightbox('images/frigider2.png', 'Frigider Mortuar Inox Gama Kold Air')">
+                        <img src="images/frigider2.png" alt="Frigider Mortuar Inox Gama Kold Air">
+                        <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                    </div>
                 </div>
 
                 <div class="card-content">
@@ -381,11 +637,11 @@
                     <div class="post-selector">
                         <span class="post-selector-title"><i class="fa-solid fa-sliders"></i> Alege configurația dorită:</span>
                         <div class="post-btns">
-                            <button class="post-btn active" onclick="selectPost('1 Post', 'Compact, ideal pentru case funerare și capele (0°C ... +5°C).', this)">1 Post</button>
-                            <button class="post-btn" onclick="selectPost('2 Posturi', 'Cea mai solicitată variantă verticală cu 2 uși individuale.', this)">2 Posturi</button>
-                            <button class="post-btn" onclick="selectPost('3 Posturi', 'Capacitate optimizată pe verticală pentru spitale și servicii funerare.', this)">3 Posturi</button>
-                            <button class="post-btn" onclick="selectPost('4 - 6 Posturi', 'Sistem modular multi-ușă pentru unități spitalicești și medicină legală.', this)">4–6 Posturi</button>
-                            <button class="post-btn" onclick="selectPost('Cameră Morgă Extinsă', 'Cameră frigorifică de mare capacitate pentru morgi municipale și spitale.', this)">Cameră Morgă</button>
+                            <button type="button" class="post-btn active" onclick="selectPost('1 Post', 'Compact, ideal pentru case funerare și capele (0°C ... +5°C).', this)">1 Post</button>
+                            <button type="button" class="post-btn" onclick="selectPost('2 Posturi', 'Cea mai solicitată variantă verticală cu 2 uși individuale.', this)">2 Posturi</button>
+                            <button type="button" class="post-btn" onclick="selectPost('3 Posturi', 'Capacitate optimizată pe verticală pentru spitale și servicii funerare.', this)">3 Posturi</button>
+                            <button type="button" class="post-btn" onclick="selectPost('4 - 6 Posturi', 'Sistem modular multi-ușă pentru unități spitalicești și medicină legală.', this)">4–6 Posturi</button>
+                            <button type="button" class="post-btn" onclick="selectPost('Cameră Morgă Extinsă', 'Cameră frigorifică de mare capacitate pentru morgi municipale și spitale.', this)">Cameră Morgă</button>
                         </div>
                         <div class="post-dynamic-info" id="post-info">
                             <strong>1 Post:</strong> Compact, ideal pentru case funerare și capele (0°C ... +5°C).
@@ -412,7 +668,7 @@
                     </div>
 
                     <div class="action-row">
-                        <a id="kold-air-wa" href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Frigider%20Mortuar%20Gama%20Kold%20Air%20(1%20Post)." target="_blank" class="btn-wa">
+                        <a id="kold-air-wa" href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Frigider%20Mortuar%20Gama%20Kold%20Air%20(1%20Post)." target="_blank" rel="noopener" class="btn-wa">
                             <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Kold Air
                         </a>
                         <a href="tel:0741585655" class="btn-call">
@@ -424,10 +680,11 @@
 
             <!-- 2. GAMA KOLD ASSIST -->
             <div class="showcase-card interactive-card reveal" data-cat="kold-assist">
-                <!-- POZA 2 FUNERARE: images/funerar2.png -->
-                <div class="photo-frame tilt-element" onclick="openLightbox('images/funerar2.png')">
-                    <img src="images/funerar2.png" alt="Elevator Hidraulic Morga Gama Kold Assist">
-                    <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                <div class="photo-frame tilt-element">
+                    <div class="studio-photo-box" onclick="openLightbox('images/elevator.png', 'Elevator Hidraulic Morgă Gama Kold Assist')">
+                        <img src="images/elevator.png" alt="Elevator Hidraulic Morga Gama Kold Assist">
+                        <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                    </div>
                 </div>
 
                 <div class="card-content">
@@ -457,7 +714,7 @@
                     </div>
 
                     <div class="action-row">
-                        <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Elevatorul%20Hidraulic%20(Gama%20Kold%20Assist)." target="_blank" class="btn-wa">
+                        <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Elevatorul%20Hidraulic%20(Gama%20Kold%20Assist)." target="_blank" rel="noopener" class="btn-wa">
                             <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Kold Assist
                         </a>
                         <a href="tel:0741585655" class="btn-call">
@@ -469,10 +726,11 @@
 
             <!-- 3. GAMA KOLD SALM -->
             <div class="showcase-card interactive-card reveal" data-cat="kold-salm">
-                <!-- POZA 3 FUNERARE: images/funerar3.png -->
-                <div class="photo-frame tilt-element" onclick="openLightbox('images/funerar3.png')">
-                    <img src="images/funerar3.png" alt="Capac Frigorific Funerar ZAAMORG Gama Kold Salm">
-                    <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                <div class="photo-frame tilt-element">
+                    <div class="studio-photo-box" onclick="openLightbox('images/capac.png', 'Capac Frigorific Funerar ZAAMORG Gama Kold Salm')">
+                        <img src="images/capac.png" alt="Capac Frigorific Funerar ZAAMORG Gama Kold Salm">
+                        <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Mărește Poza</span>
+                    </div>
                 </div>
 
                 <div class="card-content">
@@ -502,7 +760,7 @@
                     </div>
 
                     <div class="action-row">
-                        <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Capacul%20Frigorific%20ZAAMORG%20(Gama%20Kold%20Salm)." target="_blank" class="btn-wa">
+                        <a href="https://wa.me/40741585655?text=Bun%C4%83%20ziua%20FrigoFab!%20Doresc%20ofert%C4%83%20pentru%20Capacul%20Frigorific%20ZAAMORG%20(Gama%20Kold%20Salm)." target="_blank" rel="noopener" class="btn-wa">
                             <i class="fa-brands fa-whatsapp"></i> Cere Ofertă Capac ZAAMORG
                         </a>
                         <a href="tel:0741585655" class="btn-call">
@@ -516,16 +774,29 @@
     </div>
 
     <!-- ================= LIGHTBOX ================= -->
-    <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
-        <div class="lightbox-inner">
-            <button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+        <div class="lightbox-inner" onclick="event.stopPropagation()">
+            <button type="button" class="lightbox-close" aria-label="Închide" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
             <img id="lightbox-img" src="" alt="Echipament Funerar FrigoFab">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
         </div>
     </div>
 
     <!-- ================= FOOTER ================= -->
     <footer>
-        <p>&copy; 2026 <strong>FRIGO FAB (SC PROD SONRESA SRL)</strong> • Lupești, Jud. Bacău • Tel: 0741 585 655 • Sistem Certificat ISO 9001</p>
+        <div class="footer-top">
+            <div class="brand-wrap">
+                <img src="images/logo2.jpeg" alt="FrigoFab Emblem" class="brand-logo-emblem clean-logo-bg" style="height: 44px;">
+                <img src="images/logo4.jpeg" alt="Turn On Posibilităților" class="brand-logo-slogan clean-logo-bg" style="height: 28px;">
+            </div>
+            <div class="legal-badges">
+                <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener" class="legal-btn"><i class="fa-solid fa-scale-balanced"></i> ANPC – SAL</a>
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" class="legal-btn"><i class="fa-solid fa-globe"></i> Platforma SOL</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 <strong>FRIGO FAB (SC PROD SONRESA SRL)</strong> • Lupești, Jud. Bacău • Tel: 0741 585 655 • Sistem Certificat ISO 9001</p>
+        </div>
     </footer>
 
     <!-- ================= MOBILE STICKY BAR ================= -->
@@ -540,36 +811,87 @@
         const header = document.getElementById('header');
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
+        const navBackdrop = document.getElementById('nav-backdrop');
+        const scrollProgress = document.getElementById('scroll-progress');
 
-        window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 40));
-        menuToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
-
-        function openLightbox(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').classList.add('active');
+        function syncHeaderHeight() {
+            const rect = header.getBoundingClientRect();
+            document.documentElement.style.setProperty('--header-height', `${Math.round(rect.bottom)}px`);
         }
 
-        // Eliminare automată fundal alb logo prin Canvas + filtrul SVG deja activ
+        function toggleMobileMenu(forceClose = false) {
+            syncHeaderHeight();
+            const isOpen = forceClose ? false : !navMenu.classList.contains('open');
+            navMenu.classList.toggle('open', isOpen);
+            navBackdrop.classList.toggle('active', isOpen);
+            menuToggle.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        }
+
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 40);
+            syncHeaderHeight();
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+            scrollProgress.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+        });
+        window.addEventListener('resize', syncHeaderHeight);
+        syncHeaderHeight();
+
+        menuToggle.addEventListener('click', () => toggleMobileMenu());
+        navBackdrop.addEventListener('click', () => toggleMobileMenu(true));
+        navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => toggleMobileMenu(true)));
+
+        function openLightbox(src, altText = 'Echipament Funerar FrigoFab') {
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const cap = document.getElementById('lightbox-caption');
+            img.src = src;
+            img.alt = altText;
+            cap.textContent = altText;
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            if (e && e.target !== document.getElementById('lightbox')) return;
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Clean light background around logos with safe fallback
         window.addEventListener('load', () => {
-            document.querySelectorAll('.brand-logo').forEach(img => {
-                try {
-                    const c = document.createElement('canvas');
-                    const ctx = c.getContext('2d');
-                    c.width = img.naturalWidth;
-                    c.height = img.naturalHeight;
-                    if (!c.width || !c.height) return;
-                    ctx.drawImage(img, 0, 0);
-                    const imgData = ctx.getImageData(0, 0, c.width, c.height);
-                    const d = imgData.data;
-                    for (let i = 0; i < d.length; i += 4) {
-                        if (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235) {
-                            d[i + 3] = 0;
+            document.querySelectorAll('.clean-logo-bg').forEach(img => {
+                const processImage = () => {
+                    try {
+                        const c = document.createElement('canvas');
+                        const ctx = c.getContext('2d');
+                        c.width = img.naturalWidth;
+                        c.height = img.naturalHeight;
+                        if (!c.width || !c.height) return;
+                        ctx.drawImage(img, 0, 0);
+                        const imgData = ctx.getImageData(0, 0, c.width, c.height);
+                        const d = imgData.data;
+
+                        const bgR = d[0], bgG = d[1], bgB = d[2];
+                        for (let i = 0; i < d.length; i += 4) {
+                            const r = d[i], g = d[i + 1], b = d[i + 2];
+                            const dist = Math.hypot(r - bgR, g - bgG, b - bgB);
+                            if (dist < 14 && r < 252) {
+                                d[i + 3] = 0;
+                            }
                         }
+                        ctx.putImageData(imgData, 0, 0);
+                        img.src = c.toDataURL('image/png');
+                    } catch (e) {
+                        img.style.mixBlendMode = 'lighten';
                     }
-                    ctx.putImageData(imgData, 0, 0);
-                    img.src = c.toDataURL('image/png');
-                    img.style.filter = 'drop-shadow(0 2px 12px rgba(56, 189, 248, 0.45))';
-                } catch (e) {}
+                };
+                if (img.complete) processImage();
+                else img.onload = processImage;
             });
         });
 
@@ -577,34 +899,49 @@
             document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             document.querySelectorAll('.showcase-card').forEach(card => {
-                card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'grid' : 'none';
+                const show = (cat === 'all' || card.dataset.cat === cat);
+                card.style.display = show ? 'grid' : 'none';
+                if (show) {
+                    card.classList.remove('visible');
+                    requestAnimationFrame(() => card.classList.add('visible'));
+                }
             });
         }
 
         function selectPost(label, desc, btn) {
             document.querySelectorAll('.post-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('post-info').innerHTML = `<strong>${label}:</strong> ${desc}`;
+            const infoEl = document.getElementById('post-info');
+            infoEl.style.opacity = '0';
+            setTimeout(() => {
+                infoEl.innerHTML = `<strong>${label}:</strong> ${desc}`;
+                infoEl.style.opacity = '1';
+            }, 130);
             document.getElementById('kold-air-wa').href = `https://wa.me/40741585655?text=${encodeURIComponent('Bună ziua FrigoFab! Doresc ofertă pentru Frigider Mortuar Gama Kold Air (' + label + ').')}`;
         }
 
         document.querySelectorAll('.interactive-card, .tilt-element').forEach(el => {
             el.addEventListener('mousemove', e => {
+                if (window.innerWidth <= 992) return;
                 const rect = el.getBoundingClientRect();
                 const x = e.clientX - rect.left, y = e.clientY - rect.top;
                 el.style.setProperty('--mouse-x', `${x}px`);
                 el.style.setProperty('--mouse-y', `${y}px`);
-                if (window.innerWidth > 992 && el.classList.contains('tilt-element')) {
+                if (el.classList.contains('tilt-element')) {
                     const rotateX = ((y - rect.height / 2) / rect.height) * -5;
                     const rotateY = ((x - rect.width / 2) / rect.width) * 5;
-                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
                 }
             });
             el.addEventListener('mouseleave', () => { el.style.transform = ''; });
         });
 
         const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            entries.forEach((entry, idx) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), idx * 70);
+                }
+            });
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
@@ -615,20 +952,33 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
         window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-        for (let i = 0; i < 40; i++) {
-            particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 + 0.8, sy: Math.random() * 0.4 + 0.15, sx: (Math.random() - 0.5) * 0.25, a: Math.random() * 0.45 + 0.2 });
+
+        const particleCount = window.innerWidth < 768 ? 20 : 48;
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2.2 + 0.8,
+                sy: Math.random() * 0.45 + 0.15,
+                sx: (Math.random() - 0.5) * 0.3,
+                a: Math.random() * 0.5 + 0.2
+            });
         }
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
                 ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(56, 189, 248, ${p.a})`; ctx.fill();
-                p.y += p.sy; p.x += p.sx; if (p.y > canvas.height) p.y = -5;
-                if (mouse.x) {
+                p.y += p.sy; p.x += p.sx;
+                if (p.y > canvas.height) p.y = -5;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+
+                if (mouse.x && window.innerWidth > 992) {
                     const dist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-                    if (dist < 120) {
+                    if (dist < 140) {
                         ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 120) * 0.22})`; ctx.stroke();
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 140) * 0.28})`; ctx.stroke();
                     }
                 }
             });
